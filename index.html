@@ -1,0 +1,1512 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz Wesley Bigoni B</title>
+<link rel="preload" as="image" href="img/genero-homem.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="img/genero-mulher.jpg" fetchpriority="high">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: uma tela = uma altura de celular. Coluna única (máx. 480px) em flex vertical:
+   topo fixo em altura, conteúdo que encolhe (fotos absorvem a sobra), botão no rodapé dentro da safe area.
+   Regra: nada rola. Se a tela não couber, os blocos marcados com data-drop somem por prioridade.
+   Visual único e claro por escolha (clone do Home Sales), acento no azul-marinho das fotos do Wesley. */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --ink: #030712;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --soft: #f3f4f6;
+  --navy: #14213f;
+  --navy-soft: #eef1f8;
+  --money: #16a34a;
+  --money-soft: #ecfdf3;
+  --money-line: #bbf7d0;
+  --alert: #dc2626;
+  --alert-soft: #fef2f2;
+  --alert-line: #fecaca;
+  --ico-line: #4ade80;
+  --ico-soft: rgba(255, 255, 255, .14);
+  --ph-bg: #f6f7fb;
+  --ph-line: #b8c0d6;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --gap: clamp(8px, 1.6dvh, 14px);
+  --pad: clamp(9px, 1.7dvh, 14px);
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; overflow: hidden; }
+body { margin: 0; background: var(--bg); color: var(--muted); font-family: var(--font); font-size: 16px; line-height: 1.4; -webkit-font-smoothing: antialiased; }
+
+.app { height: 100%; max-width: 480px; margin: 0 auto; padding-inline: 16px; display: flex; flex-direction: column; }
+
+/* topo */
+.top { flex: none; display: grid; grid-template-columns: 32px 1fr 32px; align-items: center; gap: 8px; padding-block: clamp(6px, 1.4dvh, 12px); }
+.back { width: 32px; height: 32px; border: 0; background: transparent; color: var(--ink); font-size: 20px; cursor: pointer; border-radius: 8px; }
+.back:disabled { visibility: hidden; }
+.back:focus-visible, .opt:focus-visible, .pic:focus-visible, .cta:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+.bar { height: 6px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--ink); border-radius: 99px; transition: width .35s ease; }
+
+/* área da tela */
+main { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+.screen { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; gap: var(--gap); padding-bottom: 12px; overflow: hidden; animation: in .28s ease both; }
+.screen > * { flex: none; }
+.screen > .fill { flex: 1 1 0; min-height: 110px; }
+.pics.four.fill { min-height: 190px; }
+.screen.center-y { justify-content: center; }
+
+/* tipografia */
+.banner { background: #fffbeb; color: #92400e; font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; text-align: center; padding: 6px 10px; border-radius: 8px; }
+h1 { color: var(--ink); font-size: clamp(19px, 3.3dvh, 26px); line-height: 1.12; font-weight: 800; text-align: center; text-transform: uppercase; margin: 0; text-wrap: balance; }
+h2 { color: var(--ink); font-size: clamp(17px, 2.9dvh, 21px); line-height: 1.22; font-weight: 700; text-align: center; margin: 0; text-wrap: balance; }
+.sub { text-align: center; font-size: clamp(11.5px, 1.8dvh, 13px); font-weight: 600; text-transform: uppercase; margin: 0; text-wrap: balance; }
+.hint { text-align: center; font-size: 13px; margin: -4px 0 0; }
+.go { text-align: center; font-size: 11.5px; letter-spacing: .04em; }
+.hl-money { color: var(--money); }
+.hl-alert { color: var(--alert); }
+u { text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.lead { color: var(--ink); font-size: clamp(13px, 2dvh, 15px); text-align: center; margin: 0; text-wrap: pretty; }
+.badge { align-self: center; font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--navy); background: var(--navy-soft); padding: 4px 9px; border-radius: 6px; }
+
+/* opções */
+.opts { display: grid; gap: clamp(6px, 1.1dvh, 10px); }
+.opt { display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; font: inherit; font-size: 14px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: var(--pad) 14px; cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .1s; }
+.opt:hover { border-color: #9ca3af; }
+.opt:active { transform: scale(.99); }
+.opt.on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.opt .em { font-size: 20px; width: 26px; text-align: center; flex: none; }
+.opt .tx { min-width: 0; }
+.opt .tx small { display: block; color: var(--muted); font-size: 11.5px; margin-top: 1px; }
+.opt .box { margin-left: auto; width: 20px; height: 20px; border: 1.5px solid #9ca3af; border-radius: 5px; flex: none; display: grid; place-items: center; font-size: 13px; color: #fff; }
+.opt.on .box { background: var(--ink); border-color: var(--ink); }
+
+/* cards com foto: a grade ocupa a sobra da tela e as fotos se ajustam */
+.pics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pics.two { grid-template-rows: minmax(0, 1fr); }
+.pics.four { grid-template-rows: repeat(2, minmax(0, 1fr)); }
+.pic { display: flex; flex-direction: column; min-height: 0; padding: 0; overflow: hidden; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); cursor: pointer; font: inherit; color: var(--ink); transition: border-color .15s, box-shadow .15s; }
+.pic:hover { border-color: #9ca3af; }
+.pic.on { border-color: var(--ink); box-shadow: 0 0 0 1px var(--ink); }
+.pic .ph-img { flex: 1 1 0; min-height: 0; background: #f8f8f8; }
+.pic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 28%; }
+.pic .lbl { flex: none; padding: clamp(7px, 1.3dvh, 11px) 8px; font-size: 14px; font-weight: 500; text-align: center; background: var(--soft); }
+
+/* fotos e inserções */
+.media { border-radius: 12px; overflow: hidden; background: var(--navy); }
+.media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.media.wp img { object-position: 50% 30%; }
+.media.wl img { object-position: 24% 25%; }
+.media.wb img { object-position: 50% 22%; }
+.media.wc img { object-position: 50% 30%; }
+.media.nb img { object-position: 62% 45%; }
+.media.ps img { object-position: 50% 45%; }
+.media.wa img { object-position: 45% 25%; }
+.media.wp2 img { object-position: 45% 30%; }
+.media.wbt img { object-position: 50% 18%; }
+.media.cap img { object-position: 50% 22%; }
+.media.wm img { object-position: 50% 22%; }
+.media.mk { background: #0b1b2e; }
+.media.vid { background: #000; position: relative; }
+.unmute { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); border: 0; border-radius: 999px; background: rgba(3, 7, 18, .78); color: #fff; font: inherit; font-size: 13px; font-weight: 700; padding: 9px 14px; cursor: pointer; white-space: nowrap; }
+.media.pix { position: relative; background: #e5e7eb; }
+.media.pix img { object-position: 50% 38%; }
+.ilus { position: absolute; right: 8px; bottom: 8px; font-size: 10px; font-weight: 600; letter-spacing: .04em; color: #fff; background: rgba(3,7,18,.6); padding: 3px 7px; border-radius: 4px; }
+.media.vid video { display: block; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.media.doc { background: #fff; border: 1px solid var(--line); }
+.media.doc img { object-position: 50% 0%; }
+.media.mk:not(.gq) { background: none; border-radius: 0; display: flex; align-items: center; justify-content: center; min-height: 0; }
+.media.mk:not(.gq) img { width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: unset; border-radius: 12px; }
+.media.mk.gq img { object-fit: cover; object-position: 50% 40%; }
+.vs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.vs-col { display: grid; gap: 3px; align-content: start; border-radius: 10px; padding: clamp(8px, 1.4dvh, 12px) 11px; font-size: 12.5px; color: var(--ink); }
+.vs-col b { font-size: 13px; margin-bottom: 2px; }
+.vs-col span::before { margin-right: 5px; font-weight: 800; }
+.vs-col.bad { background: var(--alert-soft); border: 1px solid var(--alert-line); }
+.vs-col.bad span::before { content: "✕"; color: var(--alert); }
+.vs-col.good { background: var(--money-soft); border: 1px solid var(--money-line); }
+.vs-col.good span::before { content: "✓"; color: var(--money); }
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.duo > * { min-height: 0; height: 100%; }
+.ph { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; text-align: center; padding: 10px; background: var(--ph-bg); border: 1.5px dashed var(--ph-line); border-radius: 12px; color: #4b5577; font-size: 11.5px; line-height: 1.3; overflow: hidden; }
+.ph .tag { font-size: 9.5px; font-weight: 700; letter-spacing: .1em; color: var(--navy); background: #dfe5f3; padding: 3px 6px; border-radius: 4px; }
+.ph strong { color: var(--ink); font-size: 12.5px; font-weight: 600; }
+
+.facts { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.facts li { display: flex; gap: 9px; align-items: flex-start; font-size: clamp(12.5px, 1.9dvh, 14px); color: var(--ink); background: #f9fafb; border: 1px solid var(--line); border-radius: 10px; padding: clamp(7px, 1.2dvh, 10px) 11px; }
+.facts.tight { gap: 2px; } .facts.tight li { background: none; border: 0; padding: 2px 4px; }
+.facts .ck { color: var(--money); font-weight: 800; flex: none; }
+.quote { background: var(--navy); color: #fff; border-radius: 12px; padding: clamp(10px, 1.7dvh, 15px) 15px; font-size: clamp(13px, 2dvh, 15px); line-height: 1.4; font-weight: 500; }
+.quote cite { display: block; margin-top: 6px; font-style: normal; font-size: 11.5px; color: #c7d0e6; font-weight: 400; }
+.echo { background: var(--money-soft); border: 1px solid var(--money-line); color: #14532d; border-radius: 10px; padding: clamp(8px, 1.4dvh, 12px) 12px; font-size: 13.5px; text-align: center; }
+.echo b { color: var(--money); }
+
+/* rodapé: no fluxo, sempre visível, dentro da safe area */
+.foot { flex: none; padding-block: 8px calc(14px + env(safe-area-inset-bottom, 0px)); }
+.cta { display: block; width: 100%; border: 0; border-radius: 10px; background: var(--ink); color: #fff; font: inherit; font-size: 15px; font-weight: 600; padding: clamp(12px, 2dvh, 15px); cursor: pointer; }
+.cta:disabled { background: #d1d5db; cursor: not-allowed; }
+
+.real { align-self: center; background: var(--money); color: #fff; font-weight: 800; font-size: clamp(18px, 3dvh, 22px); text-align: center; padding: 12px 18px; border-radius: 12px; letter-spacing: .01em; }
+.calc { display: grid; justify-items: center; gap: 4px; border: 2px solid var(--money); border-radius: 14px; padding: clamp(12px, 2.4dvh, 20px) 14px; text-align: center; }
+.calc span { color: var(--ink); font-size: clamp(24px, 4.4dvh, 32px); font-weight: 800; line-height: 1.1; }
+.calc small { font-size: 13px; color: var(--muted); }
+.load { display: grid; gap: 8px; }
+.load-top { display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--ink); }
+.load-top b { font-variant-numeric: tabular-nums; }
+.load-bar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.load-bar i { display: block; height: 100%; width: 0; background: var(--money); border-radius: 99px; }
+
+.selo { background: var(--money); color: #fff; font-weight: 800; font-size: clamp(13px, 2.1dvh, 16px); line-height: 1.25; text-align: center; padding: clamp(9px, 1.6dvh, 13px) 14px; border-radius: 12px; text-wrap: balance; }
+.cmp, .ad { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.cmp-col, .ad-col { display: grid; gap: 6px; align-content: start; min-width: 0; }
+.ad-col { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--line); border-radius: 12px; padding: 8px 8px 10px; }
+.ad-col.good { border-color: var(--money); box-shadow: 0 0 0 1px var(--money); }
+.who { position: relative; flex: 1 1 0; min-height: 64px; border-radius: 8px; overflow: hidden; background: var(--soft); }
+.who img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+.who.bad::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(127, 29, 29, .45), rgba(127, 29, 29, 0) 55%); }
+.who.good::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(20, 83, 45, .5), rgba(20, 83, 45, 0) 55%); }
+.who .cap { position: absolute; z-index: 1; left: 6px; right: 6px; bottom: 6px; color: #fff; font-size: 11px; font-weight: 700; line-height: 1.2; text-align: center; }
+.cmp-h { font-size: 12px; text-align: center; padding: 5px; border-radius: 6px; }
+.cmp-h.bad { background: var(--alert-soft); color: var(--alert); }
+.cmp-h.good { background: var(--money-soft); color: var(--money); }
+.br { display: grid; gap: 3px; font-size: 11.5px; color: var(--ink); }
+.br-t { height: 7px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.br-t i { display: block; height: 100%; border-radius: 99px; }
+.br-t i.bad { background: var(--alert); }
+.br-t i.good { background: var(--money); }
+.said { color: var(--ink); font-size: 14px; }
+.bad-echo { background: var(--alert-soft); border-color: var(--alert-line); color: #7f1d1d; }
+.bad-echo b { color: var(--alert); }
+.rot { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; counter-reset: r; }
+.rot li { counter-increment: r; display: grid; grid-template-columns: 34px 1fr; column-gap: 10px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: clamp(9px, 1.6dvh, 13px) 12px; color: var(--ink); }
+.rot li::before { content: counter(r); grid-row: span 2; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--navy); color: #fff; font-weight: 800; }
+.rot li b { font-size: 15px; }
+.rot li span { font-size: 12.5px; color: var(--muted); }
+.rot li.me { border-color: var(--money); box-shadow: 0 0 0 1px var(--money); background: var(--money-soft); }
+.rot li.me::before { background: var(--money); }
+.trilha { display: grid; grid-template-rows: repeat(4, minmax(0, 1fr)); border-left: 3px solid var(--line); margin-left: 10px; padding-left: 18px; }
+.tr-step { position: relative; display: grid; align-content: center; gap: 1px; }
+.tr-step i { position: absolute; left: -27px; top: 50%; width: 15px; height: 15px; margin-top: -8px; border-radius: 50%; background: var(--bg); border: 3px solid var(--navy); }
+.tr-step b { color: var(--ink); font-size: 14px; }
+.tr-step span { font-size: 12px; }
+.tr-step.goal i { background: var(--money); border-color: var(--money); }
+.tr-step.goal b { color: var(--money); }
+.lead-form { display: grid; gap: 10px; }
+.lead-form label { display: grid; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--ink); }
+.lead-form input { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid #d1d5db; border-radius: 10px; padding: 11px 12px; width: 100%; }
+.lead-form input:focus { outline: 2px solid var(--navy); outline-offset: 1px; border-color: var(--navy); }
+.err { margin: 0; color: var(--alert); font-size: 13px; font-weight: 600; }
+.plist { gap: clamp(6px, 1.2dvh, 12px); }
+.plist li { font-size: clamp(12px, 2.1dvh, 16px); line-height: 1.3; padding: 5px 10px 5px 5px; gap: 10px; }
+.plist li { align-items: center; padding: 6px 10px 6px 6px; min-height: 0; }
+.th { flex: none; width: clamp(40px, 9dvh, 104px); aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; background: var(--soft); }
+.th img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 25%; }
+.th.doc img { object-position: center top; }
+.th.ico svg { display: block; width: 100%; height: 100%; }
+.th.ico svg text { stroke: none; font-family: var(--font); }
+
+/* ===== Fase 5 · página de oferta (visual escuro e dourado, modelado na referência) ===== */
+:root { --p-bg: #07090f; --p-card: #10141f; --p-line: rgba(255, 255, 255, .1); --p-text: #f3f4f6; --p-muted: #a3a9b8; --gold-1: #f6dc95; --gold-2: #d4a24c; }
+body.pitch-mode { background: var(--p-bg); }
+body.pitch-mode .back { color: var(--p-text); }
+body.pitch-mode .bar { background: rgba(255, 255, 255, .14); }
+body.pitch-mode .bar > i { background: linear-gradient(90deg, var(--gold-1), var(--gold-2)); }
+body.pitch-mode .cta { background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); color: #1a1205; font-weight: 800; letter-spacing: .02em; box-shadow: 0 0 24px rgba(233, 196, 106, .35); border-radius: 999px; }
+body.pitch-mode .foot { background: linear-gradient(to top, var(--p-bg) 75%, rgba(7, 9, 15, 0)); }
+.screen.scroll { display: block; overflow-y: auto; overflow-x: hidden; padding-bottom: 24px; color: var(--p-muted); scrollbar-width: none; }
+.screen.scroll::-webkit-scrollbar { display: none; }
+.p-hero { display: grid; gap: 14px; text-align: center; padding-bottom: 8px; }
+.p-photo { margin-inline: -16px; aspect-ratio: 4 / 4.2; max-height: 52dvh; position: relative; overflow: hidden; }
+.p-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 15%; display: block; }
+.p-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(7, 9, 15, 0) 45%, var(--p-bg) 98%); }
+.p-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: -64px; position: relative; z-index: 1; }
+.p-logo svg { width: 46px; height: 46px; flex: none; }
+.p-logo svg text { font-family: var(--font); }
+.p-logo div { display: grid; text-align: left; line-height: 1.05; }
+.p-logo small { font-size: 10.5px; color: var(--p-muted); letter-spacing: .04em; }
+.p-logo b { font-size: 20px; color: var(--p-text); letter-spacing: .01em; }
+.p-hero hr { border: 0; height: 1px; background: var(--p-line); margin: 2px 0; }
+.p-h1 { color: var(--p-text); font-size: clamp(21px, 5.6vw, 26px); line-height: 1.22; font-weight: 600; margin: 0; text-transform: none; text-align: center; text-wrap: balance; }
+.gold { background: linear-gradient(90deg, var(--gold-1), var(--gold-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.p-sub { margin: 0; font-size: 15px; line-height: 1.6; color: var(--p-muted); text-wrap: pretty; }
+.p-sub b, .p-txt b { color: var(--p-text); }
+.p-btn { display: block; width: 100%; border: 0; border-radius: 999px; padding: 17px 16px; font: inherit; font-size: 16px; font-weight: 800; letter-spacing: .02em; color: #1a1205; background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); box-shadow: 0 0 28px rgba(233, 196, 106, .35); cursor: pointer; }
+.p-btn:focus-visible { outline: 2px solid var(--p-text); outline-offset: 3px; }
+.p-mini { margin: 0; font-size: 12px; letter-spacing: .1em; color: var(--p-muted); text-align: center; }
+.p-sec { display: grid; gap: 14px; padding-block: 28px; border-top: 1px solid var(--p-line); }
+.p-h2 { color: var(--p-text); font-size: 21px; line-height: 1.25; font-weight: 700; margin: 0; text-align: center; text-wrap: balance; }
+.p-txt { margin: 0; font-size: 15px; line-height: 1.6; }
+.p-check { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.p-check li { position: relative; padding-left: 28px; font-size: 14.5px; line-height: 1.5; color: var(--p-text); }
+.p-check li::before { content: "✓"; position: absolute; left: 0; top: 0; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-size: 12px; font-weight: 800; color: #1a1205; background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); }
+.p-check li b { color: var(--gold-1); }
+.p-img { border-radius: 14px; overflow: hidden; }
+.p-img img { display: block; width: 100%; height: auto; }
+.p-quote { margin: 0; padding: 14px 16px; border-left: 3px solid var(--gold-2); background: var(--p-card); border-radius: 0 10px 10px 0; color: var(--p-text); font-size: 15px; font-style: italic; }
+.rot.dark li { background: var(--p-card); border-color: var(--p-line); color: var(--p-text); }
+.rot.dark li::before { background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); color: #1a1205; }
+.rot.dark li span { color: var(--p-muted); }
+.p-steps { display: grid; gap: 10px; }
+.p-step { background: var(--p-card); border: 1px solid var(--p-line); border-radius: 12px; padding: 14px; display: grid; gap: 8px; }
+.p-tag { justify-self: start; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-1); }
+.p-step ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; color: var(--p-text); font-size: 14px; }
+.p-step li::marker { color: var(--gold-2); font-weight: 700; }
+.ph.dark { background: var(--p-card); border-color: rgba(233, 196, 106, .4); color: var(--p-muted); min-height: 120px; }
+.ph.dark strong { color: var(--p-text); }
+.ph.dark .tag { background: rgba(233, 196, 106, .15); color: var(--gold-1); }
+.bns { display: grid; gap: 14px; }
+.bn { display: grid; grid-template-columns: 120px 1fr; gap: 12px; background: var(--p-card); border: 1px solid var(--p-line); border-radius: 14px; padding: 10px; align-items: center; }
+.bn.hot { border-color: var(--gold-2); box-shadow: 0 0 0 1px var(--gold-2), 0 0 24px rgba(233, 196, 106, .18); }
+.bn-img { border-radius: 10px; overflow: hidden; aspect-ratio: 4 / 3; background: #0b1b2e; }
+.bn-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.bn-img .ph { height: 100%; min-height: 0; padding: 6px; font-size: 10px; }
+.bn-img .ph strong { font-size: 11px; }
+.bn-tx { display: grid; gap: 3px; min-width: 0; font-size: 13px; line-height: 1.4; }
+.bn-tx b { color: var(--p-text); font-size: 14px; }
+.bn-tx small { color: var(--p-muted); font-size: 12px; }
+.bn-tx em { font-style: normal; color: var(--gold-1); font-weight: 700; font-size: 12.5px; }
+.pill { justify-self: start; font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #1a1205; background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); padding: 3px 8px; border-radius: 999px; margin-bottom: 2px; }
+.p-offer { text-align: center; }
+.stack { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; text-align: left; background: var(--p-card); border: 1px solid var(--p-line); border-radius: 12px; }
+.stack li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 14px; border-bottom: 1px solid var(--p-line); font-size: 13.5px; color: var(--p-text); }
+.stack li:last-child { border-bottom: 0; }
+.stack li b { color: var(--p-muted); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.p-total { margin: 0; font-size: 15px; color: var(--p-text); }
+.p-total s, .p-from s { color: #ef4444; }
+.coupon { justify-self: center; border: 1px dashed var(--gold-2); color: var(--gold-1); border-radius: 8px; padding: 8px 14px; font-size: 13px; }
+.p-from { margin: 0; font-size: 15px; color: var(--p-muted); }
+.p-price { margin: -6px 0 0; font-size: 56px; line-height: 1; font-weight: 800; letter-spacing: -.02em; }
+.p-price { background: linear-gradient(180deg, var(--gold-1), var(--gold-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.p-guar { justify-items: center; text-align: center; }
+.p-guar svg { width: 92px; height: 92px; }
+.p-guar svg text { font-family: var(--font); }
+.faq { display: grid; gap: 8px; }
+.faq details { background: var(--p-card); border: 1px solid var(--p-line); border-radius: 10px; padding: 0 14px; }
+.faq summary { cursor: pointer; padding: 13px 0; color: var(--p-text); font-weight: 600; font-size: 14.5px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; color: var(--gold-1); font-weight: 800; }
+.faq details[open] summary::after { content: "–"; }
+.faq p { margin: 0 0 14px; font-size: 14px; line-height: 1.55; }
+.todo { color: var(--gold-1); font-weight: 600; }
+.p-foot { border-top: 1px solid var(--p-line); padding-top: 18px; display: grid; gap: 6px; font-size: 11px; text-align: center; color: #6b7280; }
+.p-foot p { margin: 0; }
+#toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 12px); opacity: 0; pointer-events: none; background: #111827; color: #fff; font-size: 13.5px; padding: 10px 16px; border-radius: 10px; transition: opacity .2s, transform .2s; z-index: 20; max-width: calc(100% - 32px); text-align: center; }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+
+/* ===== Fase 5 · página de vendas clonada do Home Sales (claro, CTA verde fixo) ===== */
+.screen.scroll { color: var(--muted); }
+.screen.scroll > * + * { margin-top: 16px; }
+.v-h1 { color: var(--ink); font-size: clamp(19px, 5.2vw, 23px); line-height: 1.2; font-weight: 800; text-transform: uppercase; text-align: center; margin: 0; text-wrap: balance; }
+.v-h2 { color: var(--ink); font-size: clamp(18px, 5vw, 21px); line-height: 1.25; font-weight: 800; text-align: center; margin: 32px 0 0 !important; text-wrap: balance; }
+.v-h3 { color: var(--ink); font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 0; }
+.v-p { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink); }
+.v-p.center, .center { text-align: center; }
+.v-big { margin: 0; color: var(--ink); font-size: 19px; line-height: 1.3; font-weight: 800; text-align: center; text-wrap: balance; }
+.v-ad { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; }
+.v-ad > div { display: grid; gap: 4px; }
+.v-ad b { text-align: center; color: var(--ink); font-size: 16px; font-weight: 800; }
+.v-pic { aspect-ratio: 1 / 1; border-radius: 12px; overflow: hidden; background: var(--soft); }
+.v-pic img { width: 100%; height: 100%; object-fit: cover; object-position: center 50%; display: block; }
+.v-pic svg { display: block; width: 100%; height: 100%; }
+.v-pic svg text { font-family: var(--font); }
+.v-ad span { color: var(--ink); font-size: 13px; font-weight: 600; }
+.v-ad small { font-size: 12px; font-weight: 600; }
+.v-ad small.neg { color: var(--alert); } .v-ad small.pos { color: var(--money); }
+.v-sl { display: block; height: 6px; border-radius: 99px; background: var(--line); position: relative; }
+.v-sl::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; }
+.v-sl::after { content: ""; position: absolute; top: 50%; width: 14px; height: 14px; margin-top: -7px; border-radius: 50%; background: #fff; border: 2px solid #9ca3af; }
+.v-sl.neg::before { width: 18%; background: var(--alert); } .v-sl.neg::after { left: 15%; }
+.v-sl.pos::before { width: 88%; background: var(--money); } .v-sl.pos::after { left: calc(88% - 10px); }
+.v-scroll { background: var(--alert-soft); border: 1px solid var(--alert-line); color: var(--alert); border-radius: 10px; text-align: center; font-size: 12.5px; font-weight: 700; padding: 12px; line-height: 1.7; }
+.v-ph { min-height: 160px; }
+.v-img { border-radius: 14px; overflow: hidden; }
+.v-img img { display: block; width: 100%; height: auto; }
+.v-stats { display: grid; gap: 8px; }
+.v-stats div { background: var(--navy); color: #dfe5f3; border-radius: 10px; padding: 12px 14px; font-size: 13px; text-align: center; line-height: 1.4; }
+.v-stats b { color: #fff; }
+.v-need { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.v-need li { display: flex; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 10px; padding: 12px; color: var(--ink); font-size: 13.5px; font-weight: 700; }
+.v-need li span { font-size: 22px; }
+.v-quiz { display: grid; gap: 6px; background: var(--money-soft); border: 1px solid var(--money-line); border-radius: 12px; padding: 14px; color: #14532d; font-size: 14px; }
+.v-quiz b { color: var(--ink); }
+.v-ok { margin: 0; text-align: center; background: var(--money); color: #fff; font-weight: 800; border-radius: 10px; padding: 12px; font-size: 16px; }
+.v-best { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.v-best li { color: var(--ink); font-weight: 700; font-size: 14px; padding-left: 26px; position: relative; }
+.v-best li::before { content: "✓"; position: absolute; left: 0; color: var(--money); font-weight: 800; }
+.v-brand { display: grid; justify-items: center; background: var(--navy); color: #fff; border-radius: 14px; padding: 18px; }
+.v-brand small { color: #c7d0e6; font-size: 12px; }
+.v-brand b { font-size: 26px; letter-spacing: .01em; }
+.v-src { border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 6px; }
+.v-src b { color: var(--ink); font-size: 15px; }
+.v-src p { margin: 0; font-size: 13px; color: var(--muted); }
+.v-range { margin: 0; text-align: center; font-size: 30px; font-weight: 800; color: var(--money); }
+.v-all { display: grid; gap: 6px; text-align: center; color: var(--ink); font-size: 14px; font-weight: 600; }
+.v-all b { font-size: 15px; }
+.v-step { border-left: 4px solid var(--money); background: #f9fafb; border-radius: 0 10px 10px 0; padding: 12px 14px; }
+.v-step b { color: var(--ink); font-size: 15px; }
+.v-step p { margin: 4px 0 0; font-size: 13.5px; }
+.v-bns { display: grid; gap: 14px; }
+.v-bn { position: relative; display: grid; gap: 6px; border: 1px solid var(--line); border-radius: 14px; padding: 12px; text-align: center; }
+.v-bn.hot { border-color: var(--money); box-shadow: 0 0 0 1px var(--money); }
+.v-pill { justify-self: center; background: var(--money); color: #fff; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; padding: 4px 10px; border-radius: 999px; }
+.v-bn-img { aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; background: #0b1b2e; }
+.v-bn-img img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; }
+.v-bn-img .ph { height: 100%; border-radius: 10px; }
+.v-bn b { color: var(--ink); font-size: 15px; }
+.v-bn p { margin: 0; font-size: 12.5px; }
+.v-bn small { font-size: 13px; color: var(--ink); font-weight: 600; }
+.v-stack { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: 12px; }
+.v-stack li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--ink); font-weight: 600; }
+.v-stack li:last-child { border-bottom: 0; }
+.tbd { display: inline-block; background: #fef3c7; color: #92400e; border: 1px dashed #f59e0b; border-radius: 6px; padding: 1px 6px; font-size: .85em; font-weight: 700; white-space: nowrap; }
+.v-timer { display: flex; justify-content: center; align-items: baseline; gap: 4px; color: var(--alert); }
+.v-timer b { font-size: 34px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.v-timer small { font-size: 12px; } .v-timer span { font-size: 28px; font-weight: 800; }
+.v-price { display: grid; gap: 8px; justify-items: center; text-align: center; border: 2px solid var(--money); border-radius: 16px; padding: 16px; }
+.v-off { background: var(--alert); color: #fff; font-size: 11.5px; font-weight: 800; padding: 5px 10px; border-radius: 6px; }
+.v-off .tbd { background: #fff; }
+.v-price > b { color: var(--ink); font-size: 15px; }
+.v-47 { margin: 0; color: var(--money); font-size: 46px; font-weight: 800; line-height: 1; }
+.v-47 small { font-size: 15px; color: var(--muted); font-weight: 600; }
+.v-buy { width: 100%; border: 0; border-radius: 10px; background: var(--money); color: #fff; font: inherit; font-size: 16px; font-weight: 800; padding: 16px; cursor: pointer; }
+.v-guar { display: grid; justify-items: center; gap: 6px; text-align: center; }
+.v-guar svg { width: 90px; height: 90px; } .v-guar svg text { font-family: var(--font); }
+.v-faq { display: grid; gap: 8px; }
+.v-faq details { border: 1px solid var(--line); border-radius: 10px; padding: 0 14px; }
+.v-faq summary { cursor: pointer; padding: 13px 0; color: var(--ink); font-weight: 700; font-size: 14px; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.v-faq summary::-webkit-details-marker { display: none; }
+.v-faq summary::after { content: "+"; color: var(--money); font-weight: 800; }
+.v-faq details[open] summary::after { content: "–"; }
+.v-faq p { margin: 0 0 14px; font-size: 13.5px; line-height: 1.55; color: var(--ink); }
+.v-foot { border-top: 1px solid var(--line); padding-top: 16px; margin-top: 28px !important; display: grid; gap: 8px; font-size: 11px; color: var(--muted); text-align: center; }
+.v-foot p { margin: 0; line-height: 1.5; }
+body:has(.screen.scroll) .cta { background: var(--money); font-weight: 800; letter-spacing: .02em; }
+.ba { display: grid; grid-template-rows: minmax(0, 1fr) auto minmax(0, 1fr); gap: 6px; }
+.ba-row { display: grid; grid-template-columns: minmax(0, 38%) 1fr; gap: 10px; align-items: stretch; border: 1px solid var(--line); border-radius: 12px; padding: 8px; min-height: 0; }
+.ba-row.bad { background: var(--alert-soft); border-color: var(--alert-line); }
+.ba-row.good { background: var(--money-soft); border-color: var(--money); }
+.ba-pic { position: relative; border-radius: 8px; overflow: hidden; min-height: 0; }
+.ba-pic img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center 22%; }
+.ba-row:has(.phone) { grid-template-columns: auto 1fr; align-items: center; }
+.ba-pic.phone { background: #dcc3c9; height: clamp(130px, 30dvh, 300px); aspect-ratio: 140 / 220; width: auto; }
+.ba-pic.phone svg { display: block; width: 100%; height: 100%; }
+.ba-pic.phone svg text { font-family: var(--font); }
+.ba-pic span { position: absolute; left: 6px; top: 6px; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; color: #fff; padding: 3px 7px; border-radius: 5px; }
+.bad .ba-pic span { background: var(--alert); } .good .ba-pic span { background: var(--money); }
+.ba-bars { display: grid; align-content: center; gap: clamp(3px, .8dvh, 8px); min-width: 0; }
+.ba-arrow { text-align: center; font-size: 12px; font-weight: 700; color: var(--money); }
+
+/* ===== Checkout (protótipo) ===== */
+.ck-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--money); font-weight: 700; }
+.ck-prod { display: grid; grid-template-columns: 92px 1fr; gap: 12px; align-items: center; border: 1px solid var(--line); border-radius: 12px; padding: 10px; }
+.ck-cover { width: 100%; object-fit: cover; aspect-ratio: 3 / 4; border-radius: 8px; background: linear-gradient(160deg, #1b2c52, #0b1b2e); color: #fff; display: grid; align-content: center; justify-items: center; text-align: center; padding: 6px; }
+img.ck-cover { padding: 0; display: block; }
+.ck-cover span { font-size: 8px; color: #c7d0e6; } .ck-cover b { font-size: 13px; line-height: 1.1; color: #4ade80; }
+.ck-prod b { color: var(--ink); font-size: 14px; } .ck-prod small { display: block; font-size: 12px; margin-top: 2px; }
+.ck-price { margin: 6px 0 0; color: var(--money); font-size: 22px; font-weight: 800; } .ck-price s { color: var(--muted); font-size: 14px; font-weight: 500; margin-right: 4px; }
+.ck-form { display: grid; gap: 10px; }
+.ck-h { margin: 8px 0 0; color: var(--ink); font-size: 15px; }
+.ck-form label { display: grid; gap: 4px; font-size: 12.5px; font-weight: 600; color: var(--ink); min-width: 0; }
+.ck-form input[type=text], .ck-form input[type=email], .ck-form input[type=tel], .ck-form select { font: inherit; font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid #d1d5db; border-radius: 10px; padding: 11px 12px; width: 100%; min-width: 0; }
+.ck-form input:disabled, .ck-form select:disabled { background: var(--soft); color: var(--muted); }
+.ck-form input:focus, .ck-form select:focus { outline: 2px solid var(--money); outline-offset: 1px; }
+.ck-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ck-pay { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+.ck-pay button { font: inherit; font-size: 14px; font-weight: 700; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 11px 6px; cursor: pointer; }
+.ck-pay button.on { border-color: var(--money); box-shadow: 0 0 0 1px var(--money); color: var(--money); background: var(--money-soft); }
+.ck-panel { display: grid; gap: 10px; } .ck-panel p { margin: 0; font-size: 13px; color: var(--ink); }
+.ck-note { background: #fffbeb; border: 1px dashed #f59e0b; border-radius: 8px; padding: 8px 10px; color: #92400e !important; font-size: 12px !important; }
+.ck-bump { display: grid !important; grid-template-columns: auto 1fr; gap: 10px !important; align-items: start; border: 2px dashed var(--alert); background: #fffbeb; border-radius: 12px; padding: 12px; cursor: pointer; }
+.ck-bump input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--money); }
+.ck-bump span { display: grid; gap: 4px; } .ck-bump b { color: var(--alert); font-size: 13.5px; } .ck-bump small { font-weight: 400; color: var(--muted); font-size: 12px; } .ck-bump em { font-style: normal; color: var(--money); font-weight: 800; }
+.ck-sum { border: 1px solid var(--line); border-radius: 12px; padding: 4px 12px; }
+.ck-sum div { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; font-size: 13.5px; color: var(--ink); border-bottom: 1px solid var(--line); }
+.ck-sum div:last-child { border-bottom: 0; } .ck-sum .tot b { color: var(--money); font-size: 17px; }
+.ck-err { margin: 0; color: var(--alert); font-size: 13px; font-weight: 600; }
+.ck-trust { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ck-trust div { border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 2px; text-align: center; }
+.ck-trust b { color: var(--ink); font-size: 13px; } .ck-trust small { font-size: 11.5px; }
+.ck-legal { margin: 0; font-size: 11px; text-align: center; color: var(--muted); }
+.ck-hint { font-weight: 400; font-size: 12px; color: var(--muted); }
+.ck-bumps { display: grid; gap: 10px; }
+.ck-bump.on { border-style: solid; border-color: var(--money); background: var(--money-soft); }
+.ck-bump em s { color: var(--alert); font-weight: 600; margin-right: 4px; }
+.ck-clock { display: grid; gap: 6px; border: 1px solid var(--alert-line); background: var(--alert-soft); border-radius: 10px; padding: 10px 12px; }
+.ck-clock-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--alert); }
+.ck-clock-top b { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ck-thermo { height: 8px; border-radius: 99px; background: #fff; overflow: hidden; border: 1px solid var(--alert-line); }
+.ck-thermo i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #f59e0b, var(--alert)); border-radius: 99px; transition: width 1s linear; }
+.v-guar-img { max-width: 320px; width: 100%; }
+.ty-ok { display: grid; justify-items: center; } .ty-ok svg { width: 64px; height: 64px; }
+.ty-prod { border-color: var(--money-line); } .ty-prod .v-pill { justify-self: start; margin-bottom: 4px; display: inline-block; } .ty-prod b { display: block; }
+.ty-vid { aspect-ratio: 16 / 9; }
+.ty-box { border: 1px solid var(--money-line); background: var(--money-soft); border-radius: 12px; padding: 14px; display: grid; gap: 8px; color: var(--ink); }
+.ty-steps { margin: 0; padding: 0; list-style: none; counter-reset: t; display: grid; gap: 10px; }
+.ty-steps li { counter-increment: t; display: grid; grid-template-columns: 34px 1fr; column-gap: 10px; align-items: start; border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.ty-steps li::before { content: counter(t); grid-row: span 2; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--money); color: #fff; font-weight: 800; }
+.ty-steps b { color: var(--ink); font-size: 14.5px; } .ty-steps span { font-size: 13px; line-height: 1.45; }
+.ty-vip { display: grid; gap: 12px; border: 2px solid var(--navy); border-radius: 16px; padding: 16px; background: var(--navy-soft); margin-top: 28px !important; }
+.ty-vip .v-best li { font-weight: 600; }
+.ty-insta { display: grid; gap: 4px; text-align: center; border: 1px solid var(--line); border-radius: 12px; padding: 12px; color: var(--ink); font-size: 13.5px; }
+.w32-h { font-size: clamp(16px, 2.7dvh, 21px); }
+.screen > .w32-img { min-height: 72px; }
+.w32-p { margin: 0; color: var(--ink); font-size: clamp(12.5px, 1.95dvh, 15px); line-height: 1.4; text-align: center; text-wrap: pretty; }
+.w32-e { font-size: clamp(12.5px, 1.95dvh, 14px); line-height: 1.4; }
+.pl-h1 { color: var(--ink); font-size: clamp(20px, 5.4vw, 24px); line-height: 1.25; font-weight: 800; margin: 4px 0 0; text-wrap: balance; }
+.pl-p { margin: 0; color: var(--ink); font-size: 15px; line-height: 1.55; }
+.pl-lead { margin: 0; color: var(--ink); font-size: 16px; font-weight: 800; }
+.pl-steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: pl; }
+.pl-step { counter-increment: pl; position: relative; display: grid; gap: 4px; border: 1px solid var(--line); border-radius: 12px; padding: 14px 14px 14px 56px; }
+.pl-step::before { content: counter(pl); position: absolute; left: 14px; top: 14px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--navy); color: #fff; font-weight: 800; font-size: 14px; }
+.pl-step b { color: var(--ink); font-size: 15px; line-height: 1.3; }
+.pl-step span { font-size: 13.5px; line-height: 1.5; }
+.pl-step.hot { border-color: var(--money); box-shadow: 0 0 0 1px var(--money); background: var(--money-soft); }
+.pl-step.hot::before { background: var(--money); }
+.pl-step .pl-tag { justify-self: start; font-size: 10.5px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: #fff; background: var(--money); padding: 3px 8px; border-radius: 999px; line-height: 1.4; }
+.pl-dream { border-radius: 14px; padding: 16px; background: var(--navy); color: #dfe5f3; display: grid; gap: 6px; }
+.pl-dream b { color: #fff; font-size: 17px; line-height: 1.3; }
+.pl-dream p { margin: 0; font-size: 14px; line-height: 1.55; }
+.pl-end { margin: 0; text-align: center; color: var(--ink); font-size: 16px; font-weight: 800; text-wrap: balance; }
+.pl-res { display: grid; gap: 8px; border: 2px solid var(--money); background: var(--money-soft); border-radius: 14px; padding: 14px; }
+.pl-res-k { justify-self: start; background: var(--money); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .08em; padding: 4px 10px; border-radius: 999px; }
+.pl-res b { color: var(--ink); font-size: 17px; line-height: 1.3; }
+.pl-res ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; color: #14532d; font-size: 13.5px; font-weight: 600; }
+.pl-fig { margin: 0; display: grid; gap: 8px; }
+.pl-fig img { display: block; width: 100%; height: clamp(150px, 26dvh, 260px); object-fit: cover; object-position: 50% 20%; border-radius: 14px; }
+.pl-fig figcaption { font-size: 12.5px; line-height: 1.45; text-align: center; color: var(--muted); }
+.pl-fig figcaption b { color: var(--ink); }
+.v-brand small:last-child { margin-top: 4px; }
+.media.vid.sv { aspect-ratio: 9 / 14; max-height: 70dvh; }
+.v-apoio { text-align: left; background: var(--navy-soft); border-color: var(--navy) !important; }
+.v-apoio b { text-align: center; }
+.v-apoio ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13px; color: var(--ink); }
+.v-apoio small { text-align: center; }
+.v-bn small s, .v-stack b, .v-total s { color: var(--alert); }
+.v-total { margin: 0; text-align: center; color: var(--ink); font-size: 17px; font-weight: 800; }
+.rot.rot-ico li { grid-template-columns: clamp(42px, 8.5dvh, 92px) 1fr; column-gap: 12px; padding: clamp(8px, 1.4dvh, 12px) 12px; }
+.rot.rot-ico li::before { display: none; }
+.rot.rot-ico li img { grid-row: span 2; width: 100%; aspect-ratio: 1 / 1; object-fit: contain; display: block; }
+.rot.rot-ico li b { align-self: end; }
+.rot.rot-ico li span { align-self: start; }
+@media (max-height: 600px) { .rot.rot-ico li { grid-template-columns: 1fr; } .rot.rot-ico li img { display: none; } }
+
+/* ===== Página de vendas no formato da página do Pablo (Mente Milionária) ===== */
+.mm-h1 { color: var(--ink); font-size: clamp(22px, 6.4vw, 28px); line-height: 1.15; font-weight: 800; text-transform: uppercase; text-align: center; margin: 4px 0 0; text-wrap: balance; }
+.mm-ad { display: grid; grid-template-columns: 1fr 1fr; column-gap: 14px; row-gap: 10px; }
+.mm-ad-h { text-align: center; font-size: 22px; font-weight: 800; }
+.mm-ad-h.bad { color: var(--alert); } .mm-ad-h.good { color: var(--money); }
+.lv { display: grid; gap: 2px; color: var(--ink); }
+.lv b { font-size: 13.5px; } .lv span { font-size: 13px; color: var(--muted); }
+.lv-t { position: relative; display: block; height: 8px; border-radius: 99px; background: var(--line); margin: 6px 0 4px; }
+.lv-t u { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 99px; text-decoration: none; }
+.lv-t.bad u { background: var(--alert); } .lv-t.good u { background: var(--money); }
+.lv-t s { position: absolute; top: 50%; width: 18px; height: 18px; margin-top: -9px; border-radius: 50%; background: #fff; border: 3px solid #d1d5db; }
+.mm-name { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; color: var(--ink); font-size: 24px; font-weight: 800; }
+.mm-vid { aspect-ratio: 9 / 13; max-height: 70dvh; border-radius: 14px; }
+.mm-sign { margin: 0; text-align: center; color: var(--ink); font-size: 22px; font-weight: 800; font-style: italic; }
+.mm-sub { margin: -8px 0 0; text-align: center; color: var(--ink); font-size: 15px; }
+.mm-h2 { color: var(--ink); font-size: clamp(19px, 5.4vw, 23px); line-height: 1.2; font-weight: 800; text-align: center; margin: 30px 0 0 !important; text-wrap: balance; }
+.mm-h2.bad { color: var(--alert); } .mm-h2.good { color: var(--money); }
+.mm-card { display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; padding-bottom: 14px; text-align: center; }
+.mm-card > img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: 30% 25%; display: block; }
+.mm-card > img.mm-face { aspect-ratio: 4 / 3; object-position: 50% 15%; }
+.mm-card > b { color: var(--ink); font-size: 17px; font-weight: 800; padding: 10px 14px 0; line-height: 1.25; }
+.mm-card > p { margin: 0; padding: 0 14px; font-size: 14px; line-height: 1.5; }
+.mm-icons { display: flex; justify-content: center; gap: 10px; padding: 14px 10px 0; }
+.mm-icons img { width: 28%; max-width: 110px; aspect-ratio: 1 / 1; object-fit: contain; }
+.mm-steps { margin: 0; padding: 0 14px 0 34px; text-align: left; display: grid; gap: 6px; color: var(--ink); font-size: 14px; }
+.mm-steps li.hot { font-weight: 700; color: var(--money); }
+.mm-steps em { font-style: normal; font-size: 11px; background: var(--money); color: #fff; padding: 1px 6px; border-radius: 999px; white-space: nowrap; }
+.mm-soft { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 14px; text-align: center; color: #4b5563; font-size: 19px; font-weight: 700; line-height: 1.3; }
+.mm-green { background: #16a34a; color: #fff; border-radius: 12px; padding: 18px 14px; text-align: center; font-size: 22px; font-weight: 800; line-height: 1.2; text-wrap: balance; }
+.mm-lightgreen { background: var(--money-soft); border: 1px solid var(--money-line); border-radius: 12px; padding: 12px; text-align: center; color: var(--money); font-size: 17px; font-weight: 800; }
+.mm-red { background: #dc2626; color: #fff; border-radius: 12px; padding: 18px 14px; text-align: center; font-size: 24px; font-weight: 800; line-height: 1.2; margin-top: 28px !important; text-wrap: balance; }
+.mm-calm { margin: 0; text-align: center; color: var(--ink); font-size: 20px; font-weight: 800; line-height: 1.3; text-wrap: balance; }
+.mm-bh { background: #e8efff; border: 1px solid #c7d6fb; border-radius: 12px; padding: 12px; text-align: center; color: #1d4ed8; font-size: 18px; font-weight: 800; line-height: 1.25; }
+.mm-bonus { position: relative; display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; padding-bottom: 16px; text-align: center; margin-top: 8px !important; }
+.mm-bonus img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: center top; display: block; }
+.mm-bonus b { color: var(--ink); font-size: 21px; font-weight: 800; padding: 12px 14px 0; line-height: 1.2; }
+.mm-bonus p { margin: 0; padding: 0 14px; font-size: 14.5px; line-height: 1.5; }
+.mm-val { color: var(--alert); font-size: 20px; font-weight: 800; }
+.mm-val s { color: var(--alert); }
+.mm-tag { position: absolute; top: 10px; left: 10px; font-style: normal; background: var(--money); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; padding: 4px 9px; border-radius: 999px; }
+.mm-lapis { margin: 28px 0 0 !important; text-align: center; color: var(--ink); font-size: 16px; font-weight: 800; }
+.mm-stack { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.mm-stack li { display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 1.5px solid #f87171; border-radius: 12px; padding: 12px 14px; }
+.mm-stack b { color: var(--ink); font-size: 13.5px; line-height: 1.3; }
+.mm-stack span { flex: none; background: var(--soft); border-radius: 8px; padding: 6px 10px; color: var(--ink); font-weight: 800; font-size: 16px; }
+.mm-total { margin: 0; text-align: center; font-size: 40px; font-weight: 800; color: var(--alert); }
+.mm-total s { color: var(--alert); }
+.mm-porem { margin: 0; text-align: center; color: var(--ink); font-size: 18px; font-weight: 800; line-height: 1.25; text-wrap: balance; }
+.mm-pack { width: 100%; margin-top: 8px !important; }
+.mm-pack img { display: block; width: 100%; height: auto; }
+.mm-price { border: 2px solid #1d4ed8; border-radius: 14px; overflow: hidden; }
+.mm-price-h { background: #1d4ed8; color: #fff; text-align: center; font-weight: 800; font-size: 15px; padding: 8px; }
+.mm-price-b { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 14px; }
+.mm-price-b > b { color: var(--ink); font-size: 18px; line-height: 1.25; font-weight: 800; }
+.mm-price-v { display: grid; justify-items: center; text-align: center; background: var(--soft); border-radius: 10px; padding: 8px 10px; }
+.mm-price-v small { font-size: 12px; color: var(--muted); }
+.mm-price-v strong { color: var(--ink); font-size: 30px; line-height: 1.1; font-weight: 800; }
+.mm-pay { margin: 0; text-align: center; font-size: 13px; color: var(--muted); }
+.mm-x, .mm-ok { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.mm-x li, .mm-ok li { border-radius: 12px; padding: 12px 14px 12px 42px; position: relative; font-size: 15px; line-height: 1.4; color: var(--ink); }
+.mm-x li { background: var(--alert-soft); border: 1px solid var(--alert-line); }
+.mm-ok li { background: var(--money-soft); border: 1px solid var(--money-line); }
+.mm-x li::before { content: "✕"; position: absolute; left: 14px; top: 11px; color: var(--alert); font-weight: 800; font-size: 17px; }
+.mm-ok li::before { content: "✓"; position: absolute; left: 12px; top: 10px; width: 20px; height: 20px; border-radius: 5px; background: var(--money); color: #fff; font-size: 13px; font-weight: 800; display: grid; place-items: center; }
+@media (max-width: 360px) { .mm-price-b { grid-template-columns: 1fr; } }
+.mm-price-why { list-style: none; margin: 0; padding: 0 14px 10px; display: grid; gap: 6px; }
+.mm-price-why li { position: relative; padding-left: 22px; font-size: 13.5px; line-height: 1.4; color: var(--ink); }
+.mm-price-why li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--money); font-weight: 800; }
+.mm-price-up { margin: 0; background: #fffbeb; border-top: 1px solid #fde68a; color: #92400e; font-size: 12.5px; font-weight: 700; text-align: center; padding: 8px 12px; }
+.mm-why { display: grid; gap: 8px; background: var(--navy); color: #dfe5f3; border-radius: 14px; padding: 16px; }
+.mm-why b { color: #fff; font-size: 20px; } .mm-why p { margin: 0; font-size: 14.5px; line-height: 1.55; } .mm-why span { justify-self: end; font-style: italic; font-weight: 700; color: #fff; }
+.mm-obj { border: 1px solid var(--alert-line); background: var(--alert-soft); border-radius: 12px; padding: 12px 14px; display: grid; gap: 4px; }
+.mm-obj b { color: var(--alert); font-size: 16px; } .mm-obj p { margin: 0; color: var(--ink); font-size: 14px; line-height: 1.45; }
+.ba-list { list-style: none; margin: 0; padding: 0; display: grid; align-content: center; gap: clamp(4px, 1dvh, 10px); min-width: 0; }
+.ba-list li { position: relative; padding-left: 22px; font-size: clamp(12px, 1.9dvh, 14.5px); line-height: 1.3; color: var(--ink); }
+.ba-list.x li::before { content: "✕"; position: absolute; left: 2px; top: 0; color: var(--alert); font-weight: 800; }
+.ba-list.ok li::before { content: "✓"; position: absolute; left: 0; top: 0; width: 16px; height: 16px; border-radius: 4px; background: var(--money); color: #fff; font-size: 11px; font-weight: 800; display: grid; place-items: center; }
+/* fim da fase */
+.vars { width: 100%; border-collapse: collapse; font-size: 13px; color: var(--ink); }
+.vars td { border-bottom: 1px solid var(--line); padding: 6px 4px; vertical-align: top; }
+.vars td:first-child { color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 12px; width: 38%; }
+.legal { font-size: 10.5px; color: #9ca3af; text-align: center; margin: 0; }
+
+@keyframes in { from { opacity: .001; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .screen { animation: none; } .bar > i { transition: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f6dc95"/><stop offset="1" stop-color="#d4a24c"/></linearGradient><linearGradient id="icobg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b2c52"/><stop offset="1" stop-color="#0b1b2e"/></linearGradient></defs></svg>
+<div class="app">
+  <div class="top">
+    <button class="back" id="back" type="button" aria-label="Voltar">&#8592;</button>
+    <div class="bar" aria-hidden="true"><i id="prog"></i></div>
+    <span></span>
+  </div>
+  <main id="app" aria-live="polite"></main>
+  <div class="foot" id="foot" hidden><button class="cta" id="cta" type="button">Continuar</button></div>
+</div>
+
+<script>
+const TOTAL = 45;
+/* checkout e página de obrigado ficam na plataforma de pagamento: cole aqui o link do checkout */
+const CHECKOUT_URL = "";
+const A = {};
+const hist = [];
+
+const AREA_TXT = { fin: "no financeiro", cont: "na contabilidade ou no fiscal", adm: "no administrativo", comp: "em compras", rh: "no RH ou DP", out: "na sua área" };
+const TAREFA_TXT = { pagar: "lançar contas a pagar e receber", extrato: "conferir o extrato do banco", boleto: "emitir boleto ou nota", planilha: "montar planilha de controle", relatorio: "fazer relatório para o chefe" };
+const sexo = () => A.genero === "mulher" ? "mulher" : "homem";
+
+/* data-drop="N": se a tela não couber na altura do celular, some primeiro o maior N */
+const S = [
+  { n: 1, render: () => `
+      <div class="banner" data-drop="2">Responda o quiz e libere essa oportunidade</div>
+      <h1>Faça até <span class="hl-money">R$2.500 por mês</span> de renda extra com o que você já faz no seu trabalho</h1>
+      <p class="sub" data-drop="3">Se no seu trabalho você lida com contas, planilhas ou rotina de empresa, <u>pequenas empresas</u> pagam para terceirizar isso. Veja se você tem perfil para atender a primeira, com cerca de 1h por dia, sem largar seu emprego.</p>
+      <div class="go" data-drop="1">↓ RESPONDA PARA COMEÇAR ↓</div>
+      <h2>Você é homem ou mulher?</h2>
+      <div class="pics two fill">
+        ${pic("genero", "homem", "Homem", "img/genero-homem.jpg")}
+        ${pic("genero", "mulher", "Mulher", "img/genero-mulher.jpg")}
+      </div>` },
+
+  { n: 2, render: () => `
+      <h2>Qual a sua idade?</h2>
+      <p class="hint" data-drop="1">Isso ajuda a montar um plano no seu ritmo</p>
+      <div class="pics four fill">
+        ${pic("idade", "18-29", "18–29", `img/${sexo()}-18-29.jpg`)}
+        ${pic("idade", "29-39", "29–39", `img/${sexo()}-29-39.jpg`)}
+        ${pic("idade", "39-49", "39–49", `img/${sexo()}-39-49.jpg`)}
+        ${pic("idade", "50+", "+50", `img/${sexo()}-50.jpg`)}
+      </div>` },
+
+  { n: 3, center: true, render: () => `
+      <h2>Você tem filhos?</h2>
+      <div class="opts">${opt("filhos", "sim", "✅", "Sim")}${opt("filhos", "nao", "❌", "Não")}</div>` },
+
+  { n: 4, center: true, render: () => `
+      <h2>Como você trabalha hoje?</h2>
+      <div class="opts">
+        ${opt("vinculo", "clt", "💼", "CLT (carteira assinada)")}
+        ${opt("vinculo", "pj", "🧾", "PJ ou autônomo")}
+        ${opt("vinculo", "publico", "🏛️", "Servidor público")}
+        ${opt("vinculo", "busca", "🔎", "Estou procurando emprego")}
+      </div>` },
+
+  { n: 5, center: true, render: () => `
+      <h2>Em qual área você trabalha?</h2>
+      <p class="hint" data-drop="1">Ou na que mais se parece com o seu dia a dia</p>
+      <div class="opts">
+        ${opt("area", "fin", "💰", "Financeiro", "Contas a pagar, a receber, tesouraria")}
+        ${opt("area", "cont", "📊", "Contábil ou fiscal")}
+        ${opt("area", "adm", "🗂️", "Administrativo")}
+        ${opt("area", "comp", "🛒", "Compras")}
+        ${opt("area", "rh", "👥", "RH ou DP")}
+        ${opt("area", "out", "➕", "Outra área")}
+      </div>` },
+
+  { n: 6, cta: "CONTINUAR", render: () => `
+      <span class="badge" data-drop="3">Quem vai te mostrar o caminho</span>
+      <h2>Aqui não é vida de Instagram. <span class="hl-money">É a vida real.</span></h2>
+      <div class="media wp fill"><img src="img/wesley-pablo.webp" alt="Wesley Bigoni ao lado de Pablo Marçal em um evento"></div>
+      <p class="lead">Wesley Bigoni é o <b>CFO das empresas do Pablo Marçal</b>, no Brasil e nos EUA, e dono de uma empresa de BPO financeiro.</p>
+      <ul class="facts">
+        <li><span class="ck">✓</span><span>Clientes do BPO dele pagam cerca de <b>R$2.500 por mês</b></span></li>
+        <li><span class="ck">✓</span><span>Cada analista do time atende <b>até 6 empresas</b></span></li>
+        <li data-drop="2"><span class="ck">✓</span><span>Cuida das empresas, investimentos e patrimônio do grupo</span></li>
+      </ul>
+      <div class="echo" data-drop="1">${A.area === "out" ? "Se você já lida com a rotina de uma empresa, já começa com metade do caminho andado." : `Quem trabalha <b>${AREA_TXT[A.area] || "na sua área"}</b> já começa com metade do caminho andado.`}</div>` },
+
+  { n: 7, center: true, render: () => `
+      <h2>Há quanto tempo você trabalha ${AREA_TXT[A.area] || "nessa área"}?</h2>
+      <div class="opts">
+        ${opt("exp", "<1", "🌱", "Menos de 1 ano")}
+        ${opt("exp", "1-3", "📗", "De 1 a 3 anos")}
+        ${opt("exp", "3-5", "📘", "De 3 a 5 anos")}
+        ${opt("exp", "5+", "🏆", "Mais de 5 anos")}
+      </div>` },
+
+  { n: 8, multi: true, center: true, cta: "CONTINUAR", render: () => `
+      <h2>Quais dessas tarefas você já fez no trabalho?</h2>
+      <p class="hint" data-drop="1">Marque todas que se aplicam</p>
+      <div class="opts">
+        ${chk("pagar", "🧮", "Lançar contas a pagar e receber")}
+        ${chk("extrato", "🏦", "Conferir o extrato do banco")}
+        ${chk("boleto", "🧾", "Emitir boleto ou nota")}
+        ${chk("planilha", "📈", "Montar planilha de controle")}
+        ${chk("relatorio", "📋", "Fazer relatório para o chefe")}
+        ${chk("nenhuma", "🤷", "Nenhuma ainda")}
+      </div>` },
+
+  { n: 9, center: true, render: () => `
+      <h2>Você usa Excel ou Google Planilhas no dia a dia?</h2>
+      <div class="opts">
+        ${opt("excel", "todo", "🔥", "Todo dia")}
+        ${opt("excel", "as-vezes", "📅", "Às vezes")}
+        ${opt("excel", "nunca", "😅", "Quase nunca")}
+      </div>` },
+
+  { n: 10, cta: "CONTINUAR", render: () => {
+      const t = (A.tarefas || []).filter(x => x !== "nenhuma");
+      const head = t.length
+        ? `Se você já sabe <span class="hl-money">${TAREFA_TXT[t[0]]}</span>, já faz o que empresas pagam para terceirizar.`
+        : `Tudo bem começar do zero. <span class="hl-money">A maioria começa assim.</span>`;
+      const echo = t.length > 1
+        ? `<div class="echo" data-drop="2">Você marcou <b>${t.length} tarefas</b>. Todas fazem parte da rotina de um BPO financeiro.</div>`
+        : A.excel === "nunca"
+          ? `<div class="echo" data-drop="2">Não usa planilha? As planilhas prontas do curso fazem o trabalho pesado.</div>` : "";
+      return `
+      <h2>${head}</h2>
+      ${echo}
+      <div class="duo fill">
+        <div class="media wl"><img src="img/wesley-mesa-lateral.webp" alt="Wesley Bigoni explicando, sentado à mesa"></div>
+        <div class="media doc"><img src="img/prova-contrato.jpg" alt="Primeira página de um contrato de prestação de serviços de BPO financeiro"></div>
+      </div>
+      <div class="quote">“Meus clientes me pagam R$2.500 por empresa para eu ser o financeiro deles.”<cite data-drop="1">Wesley Bigoni · CFO e BPO financeiro</cite></div>`; } },
+
+  /* ================= FASE 2 · DOR ================= */
+  { n: 11, id: "fase2", center: true, render: () => `
+      <h2>Quanto você ganha hoje, em média?</h2>
+      <p class="hint" data-drop="1">Fica só entre nós. Serve para calcular seu potencial</p>
+      <div class="opts">
+        ${opt("renda", "ate2", "💵", "Até R$2.000")}
+        ${opt("renda", "2a3", "💰", "De R$2.000 a R$3.500")}
+        ${opt("renda", "3a5", "🤑", "De R$3.500 a R$5.000")}
+        ${opt("renda", "5+", "🔥", "Mais de R$5.000")}
+      </div>` },
+
+  { n: 12, center: true, render: () => `
+      <h2>Você sente que ganha o justo pelo que entrega no trabalho?</h2>
+      <div class="opts">
+        ${opt("justo", "nao", "😤", "Não, faço muito mais do que recebo")}
+        ${opt("justo", "melhor", "😐", "Poderia ser melhor")}
+        ${opt("justo", "sim", "🙂", "Sim, acho justo")}
+      </div>` },
+
+  { n: 13, center: true, render: () => `
+      <h2>Você já sentiu que <span class="hl-alert">o salário não fecha</span> o mês?</h2>
+      <p class="hint" data-drop="1">As contas chegam antes do próximo pagamento</p>
+      <div class="opts">
+        ${opt("fecha", "sempre", "😩", "Sempre, todo mês falta")}
+        ${opt("fecha", "as-vezes", "😬", "Tem meses que não fecha")}
+        ${opt("fecha", "zero", "😑", "Fecha, mas não sobra nada")}
+        ${opt("fecha", "sobra", "😌", "Fecha e sobra")}
+      </div>` },
+
+  { n: 14, center: true, render: () => A.filhos === "sim" ? `
+      <h2>Você já deixou de fazer algo <span class="hl-alert">pelos seus filhos</span> por falta de dinheiro?</h2>
+      <div class="opts">
+        ${opt("abriu_mao", "sim", "😔", "Sim, mais de uma vez")}
+        ${opt("abriu_mao", "pouco", "😕", "Já aconteceu")}
+        ${opt("abriu_mao", "nao", "🙌", "Nunca precisei")}
+      </div>` : `
+      <h2>Você já <span class="hl-alert">adiou um plano seu</span> por falta de dinheiro?</h2>
+      <p class="hint" data-drop="1">Uma viagem, um curso, sair do aluguel…</p>
+      <div class="opts">
+        ${opt("abriu_mao", "sim", "😔", "Sim, mais de uma vez")}
+        ${opt("abriu_mao", "pouco", "😕", "Já aconteceu")}
+        ${opt("abriu_mao", "nao", "🙌", "Nunca precisei")}
+      </div>` },
+
+  { n: 15, cta: "CONTINUAR", render: () => {
+      const filhos = A.filhos === "sim";
+      const dor = A.abriu_mao === "nao"
+        ? (filhos ? "Você protegeu seus filhos até aqui. O próximo passo é dar folga para a família." : "Você segurou as contas até aqui. O próximo passo é sobrar dinheiro para os seus planos.")
+        : (filhos ? "Quando o dinheiro aperta, quem sente primeiro são os filhos. E isso pesa em quem trabalha o mês inteiro." : "Quando o dinheiro aperta, os planos são os primeiros a ficar para depois.");
+      return `
+      <span class="badge" data-drop="3">Palavra do Wesley</span>
+      <h2>“Por trás de todo CNPJ tem um CPF.”</h2>
+      <div class="media wb fill"><img src="img/wesley-bracos-centro.jpg" alt="Wesley Bigoni de braços cruzados no escritório"></div>
+      <div class="quote">“Não existe paz numa casa com o financeiro desorganizado. Eu uso a gestão para cuidar de famílias.”<cite data-drop="1">Wesley Bigoni · CFO das empresas do Pablo Marçal</cite></div>
+      <div class="echo" data-drop="2">${dor}</div>`; } },
+
+  { n: 16, center: true, render: () => `
+      <h2>Dinheiro já causou <span class="hl-alert">briga dentro de casa</span>?</h2>
+      <div class="opts">
+        ${opt("briga", "frequente", "😣", "Sim, com frequência")}
+        ${opt("briga", "as-vezes", "😶", "Às vezes")}
+        ${opt("briga", "nao", "😊", "Não")}
+      </div>` },
+
+  { n: 17, center: true, render: () => `
+      <h2>Quantos aumentos de verdade você teve nos últimos 3 anos?</h2>
+      <p class="hint" data-drop="1">Sem contar o reajuste do dissídio</p>
+      <div class="opts">
+        ${opt("aumentos", "0", "🚫", "Nenhum")}
+        ${opt("aumentos", "1", "1️⃣", "Um")}
+        ${opt("aumentos", "2+", "📈", "Dois ou mais")}
+      </div>` },
+
+  { n: 18, center: true, render: () => `
+      <h2>Você sente que sua carreira está <span class="hl-alert">travada</span> onde você trabalha?</h2>
+      <div class="opts">
+        ${opt("travada", "sim", "🧱", "Sim, não vejo como crescer")}
+        ${opt("travada", "as-vezes", "🤔", "Às vezes sinto isso")}
+        ${opt("travada", "nao", "🚀", "Não, estou crescendo")}
+      </div>` },
+
+  { n: 19, cta: "CONTINUAR", render: () => {
+      const head = A.aumentos === "0"
+        ? `Nenhum aumento em 3 anos. <span class="hl-alert">Seu salário depende da decisão de outra pessoa.</span>`
+        : A.travada === "nao"
+          ? `Você está crescendo. <span class="hl-money">Agora imagine crescer também por fora.</span>`
+          : `Seu salário cresce quando o chefe decide. <span class="hl-money">Sua renda extra cresce quando VOCÊ decide.</span>`;
+      return `
+      <h2>${head}</h2>
+      <div class="media wa fill"><img src="img/wesley-apontando.jpg" alt="Wesley Bigoni explicando, com o dedo indicador levantado"></div>
+      <div class="quote">“Quem faz o financeiro da empresa sabe quanto ela gasta com cada funcionário. Por que não cobrar por esse conhecimento?”<cite data-drop="1">Wesley Bigoni</cite></div>`; } },
+
+  { n: 20, center: true, render: () => `
+      <h2>Você já pensou em fazer uma <span class="hl-money">renda extra</span>?</h2>
+      <div class="opts">
+        ${opt("tentou", "ja-faz", "📈", "Já faço uma renda extra")}
+        ${opt("tentou", "nao-deu", "🙋", "Já tentei, mas não deu certo")}
+        ${opt("tentou", "pensa", "🤔", "Penso, mas nunca comecei")}
+        ${opt("tentou", "nunca", "❌", "Nunca pensei nisso")}
+      </div>` },
+
+  { n: 21, center: true, render: () => `
+      <h2>O que mais te trava para começar?</h2>
+      <div class="opts">
+        ${opt("trava", "cliente", "😶", "Não sei como conseguir cliente")}
+        ${opt("trava", "tempo", "⏳", "Não tenho tempo")}
+        ${opt("trava", "preco", "💲", "Não sei quanto cobrar")}
+        ${opt("trava", "capaz", "😰", "Medo de não dar conta")}
+        ${opt("trava", "golpe", "😨", "Medo de curso que não funciona")}
+      </div>` },
+
+  { n: 22, cta: "CONTINUAR", render: () => {
+      const Q = {
+        cliente: ["Você não precisa virar vendedor.", "Eu te entrego as mensagens prontas para WhatsApp, LinkedIn e indicações, e o roteiro de acompanhamento.", "Kit de abordagem do primeiro cliente", "img/bonus-kit-abordagem-v3.jpg"],
+        tempo:   ["Um cliente pequeno cabe em cerca de 1h por dia.", "Fora do expediente, de casa. E você atende com o roteiro pronto, sem perder tempo pensando no que falar.", "Script: como atender seu primeiro cliente", "img/bonus-script-v3.jpg"],
+        preco:   ["Você vai sair com o preço pronto.", "A planilha calcula quanto cobrar de cada empresa, de acordo com o trabalho que ela dá.", "Planilha de precificação", "img/bonus-precificacao-v3.jpg"],
+        capaz:   ["Você já faz isso todo dia na empresa.", "A diferença é que agora vai cobrar por isso. E começa com o diagnóstico pronto do cliente.", "Planilha de diagnóstico do cliente", "img/bonus-diagnostico-v3.jpg"],
+        golpe:   ["Aqui é vida real.", "Eu sou CFO de um grupo empresarial, presto serviços como BPO e ensino pessoas comuns a ganhar dinheiro como BPO. Ensino o que eu faço, não o que eu posto.", "Garantia incondicional de 7 dias", "img/garantia-7-dias-q.jpg", "gq"]
+      }[A.trava] || ["Fique tranquilo.", "O plano foi pensado para quem nunca atendeu uma empresa por fora.", "Plano do Primeiro Cliente"];
+      return `
+      <span class="badge" data-drop="3">Sobre a sua trava</span>
+      <h2>Fique tranquilo. <span class="hl-money">${Q[0]}</span></h2>
+      <p class="lead">${Q[1]}</p>
+      ${Q[3] ? `<div class="media mk ${Q[4] || ""} fill"><img src="${Q[3]}" alt="${Q[2]}"></div>` : ph("MOCKUP", Q[2], "capa do bônus em 3D ou print da planilha · 4:3", "fill")}
+      <div class="echo" data-drop="1">Esse material vem <b>junto com o plano</b>, sem custo a mais.</div>`; } },
+
+  { n: 23, center: true, render: () => `
+      <h2>Você já ouviu falar em <span class="hl-money">BPO financeiro</span>?</h2>
+      <p class="hint" data-drop="1">É o financeiro terceirizado de uma empresa</p>
+      <div class="opts">
+        ${opt("consciencia", "trabalha", "💼", "Já trabalho com isso")}
+        ${opt("consciencia", "ouviu", "👂", "Já ouvi falar")}
+        ${opt("consciencia", "nunca", "🤷", "Nunca ouvi falar")}
+      </div>` },
+
+  { n: 24, cta: "CONTINUAR", render: () => {
+      const intro = A.consciencia === "trabalha"
+        ? "Você já conhece o mercado. Falta ter seus próprios clientes."
+        : A.consciencia === "ouviu"
+          ? "É exatamente isso: o financeiro feito por alguém de fora."
+          : "BPO é o nome que o mercado dá para o financeiro feito por alguém de fora da empresa.";
+      return `
+      <span class="badge" data-drop="3">A oportunidade</span>
+      <h2>Empresas não querem contratar. <span class="hl-money">Preferem terceirizar.</span></h2>
+      <p class="lead" data-drop="2">${intro}</p>
+      <div class="vs">
+        <div class="vs-col bad"><b>Contratar um funcionário</b><span>Salário</span><span>Encargos e benefícios</span><span>Férias e 13º</span><span>Vínculo e demissão</span></div>
+        <div class="vs-col good"><b>Contratar um BPO</b><span>Uma mensalidade</span><span>Sem encargos</span><span>Sem vínculo</span><span>Relatório todo mês</span></div>
+      </div>
+      <div class="media vid fill"><video src="${vsrc("video/wesley-bpo-v2.mp4")}" poster="img/wesley-bpo-v2-poster.jpg" data-nopause playsinline disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback" preload="auto" aria-label="Wesley Bigoni explica o que é BPO financeiro"></video></div>
+      <div class="echo">Na empresa do Wesley, cada cliente paga <b>cerca de R$2.500 por mês</b>.</div>`; } },
+
+  /* ================= FASE 3 · DESEJO ================= */
+  { n: 25, id: "fase3", center: true, render: () => `
+      <h2>Você conhece algum <span class="hl-money">dono de empresa</span>?</h2>
+      <p class="hint" data-drop="1">Parente, amigo, ex-chefe, fornecedor, cliente de onde você trabalha</p>
+      <div class="opts">
+        ${opt("rede", "varios", "🤝", "Conheço vários")}
+        ${opt("rede", "poucos", "👤", "Um ou dois")}
+        ${opt("rede", "ninguem", "🤷", "Não conheço ninguém")}
+      </div>` },
+
+  { n: 26, center: true, render: () => `
+      <h2>Faria diferença na sua vida ter até <span class="hl-money">R$2.500 a mais</span> por mês?</h2>
+      ${rendaEcho()}
+      <div class="opts">
+        ${opt("diferenca", "muita", "✅", "Muita diferença")}
+        ${opt("diferenca", "bastante", "👍", "Ajudaria bastante")}
+        ${opt("diferenca", "pouca", "🤏", "Pouca diferença")}
+      </div>` },
+
+  { n: 27, render: () => `
+      <h2>Se caísse <span class="hl-money">R$2.500</span> na sua conta todo mês, o que você faria primeiro?</h2>
+      <div class="media pix fill"><img src="img/pix-2500.jpg" alt="Celular com a notificação: Você recebeu um Pix de R$ 2.500,00"></div>
+      <div class="opts">
+        ${opt("uso", "dividas", "💳", "Pagaria minhas dívidas")}
+        ${opt("uso", "familia", "👨‍👩‍👧", "Daria mais conforto para minha família")}
+        ${opt("uso", "guardar", "🏦", "Guardaria e investiria")}
+        ${opt("uso", "sonho", "✨", "Realizaria um sonho")}
+      </div>` },
+
+  { n: 28, center: true, render: () => `
+      <h2>Quanto tempo você teria por dia, <span class="hl-money">fora do expediente</span>?</h2>
+      <p class="hint" data-drop="1">De casa, no seu horário</p>
+      <div class="opts">
+        ${opt("tempo", "30-", "⏳", "Menos de 30 minutos")}
+        ${opt("tempo", "30-60", "⏰", "De 30 minutos a 1 hora")}
+        ${opt("tempo", "1-2", "🕒", "De 1 a 2 horas")}
+        ${opt("tempo", "2+", "🔥", "Mais de 2 horas")}
+      </div>` },
+
+  { n: 29, cta: "CONTINUAR", render: () => {
+      const T = {
+        "30-": ["menos de 30 minutos", "1 empresa pequena", "começando devagar e aumentando o tempo aos poucos"],
+        "30-60": ["até 1 hora", "1 empresa", "no ritmo que o Wesley indica para quem está começando"],
+        "1-2": ["de 1 a 2 horas", "até 2 empresas", "o suficiente para passar da primeira para a segunda empresa"],
+        "2+": ["mais de 2 horas", "3 empresas ou mais", "prestando serviço como BPO nas horas vagas"]
+      }[A.tempo] || ["cerca de 1 hora", "1 empresa", ""];
+      return `
+      <div class="real">JÁ PODE SER UMA REALIDADE!</div>
+      <div class="media nb fill"><img src="img/bpo-notebook.jpg" alt="Pessoa trabalhando no notebook com um painel financeiro de empresas"></div>
+      <p class="lead">Com <b>${T[0]}</b> por dia, dá para atender</p>
+      <div class="calc"><span>${T[1]}</span><small>${T[2]}</small></div>
+      <div class="echo">Cada empresa paga <b>até R$2.500 por mês</b> pelo financeiro terceirizado.</div>`; } },
+
+  { n: 30, center: true, render: () => `
+      <h2>Hoje, a sua maior motivação é…</h2>
+      <div class="opts">
+        ${opt("motivo", "renda", "💸", "Ter uma renda extra todo mês")}
+        ${opt("motivo", "sair", "🚪", "Um dia sair da CLT")}
+        ${opt("motivo", "negocio", "🏢", "Ter meu próprio negócio")}
+        ${opt("motivo", "familia", "🛡️", "Dar segurança para minha família")}
+      </div>` },
+
+  { n: 31, center: true, render: () => `
+      <h2>Daqui a 12 meses, como você quer estar?</h2>
+      <div class="opts">
+        ${opt("futuro", "renda", "📈", "Com uma renda extra estável")}
+        ${opt("futuro", "empresa", "🏢", "Com minha própria empresa de BPO")}
+        ${opt("futuro", "equipe", "👥", "Com vários clientes e uma equipe")}
+        ${opt("futuro", "nao-sei", "🤔", "Ainda não sei")}
+      </div>` },
+
+  { n: 32, cta: "CONTINUAR", render: () => `
+      <span class="badge" data-drop="1">Por que o Wesley ensina isso</span>
+      <h2 class="w32-h">Sozinho, eu ajudo algumas empresas. <span class="hl-money">Ensinando você, chegamos mais longe.</span></h2>
+      <div class="media wp2 fill w32-img"><img src="img/wesley-palestra.jpg" alt="Wesley Bigoni sorrindo e acenando durante uma palestra"></div>
+      <p class="w32-p">Muitos empresários precisam de ajuda para organizar as finanças. E você pode aprender a prestar esse serviço.</p>
+      <p class="w32-p">Por isso, quero compartilhar o que aprendi na prática: para que mais pessoas ajudem essas empresas e construam uma nova fonte de renda como BPO financeiro.</p>
+      <div class="echo w32-e">Você ajuda um negócio a cuidar melhor do dinheiro enquanto constrói novas possibilidades para a sua família.</div>` },
+
+  { n: 33, center: true, render: () => `
+      <h2>Como você prefere atender suas empresas?</h2>
+      <div class="opts">
+        ${opt("local", "casa", "🏠", "100% de casa, pelo computador")}
+        ${opt("local", "misto", "🏢", "De casa, com algumas visitas")}
+        ${opt("local", "tanto", "🤷", "Tanto faz")}
+      </div>` },
+
+  { n: 34, auto: true, center: true, render: () => `
+      <h2>Analisando suas respostas…</h2>
+      <div class="load"><div class="load-top"><span id="ld-txt">Cruzando sua área e sua experiência</span><b id="ld-pct">0%</b></div><div class="load-bar"><i id="ld-bar"></i></div></div>
+      <p class="lead" data-drop="1">Estamos calculando o seu potencial no financeiro terceirizado.</p>`,
+    onShow: () => loader(["Cruzando sua área e sua experiência", "Calculando seu potencial de renda", "Montando o seu diagnóstico"]) },
+
+  { n: 35, cta: "CONTINUAR", render: () => `
+      <h2>Seu diagnóstico está pronto!</h2>
+      <p class="lead">Falta só um passo para ver o seu resultado.</p>
+      <form id="lead" class="lead-form" novalidate>
+        <label for="f-nome">Primeiro nome<input id="f-nome" name="nome" type="text" autocomplete="given-name" placeholder="Digite seu primeiro nome" value="${esc(A.nome)}"></label>
+        <label for="f-email">E-mail<input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="Digite seu melhor e-mail" value="${esc(A.email)}"></label>
+        <label for="f-whats">WhatsApp<input id="f-whats" name="whats" type="tel" autocomplete="tel-national" inputmode="numeric" placeholder="(11) 99999-9999" value="${esc(A.whats)}"></label>
+        <p class="err" id="f-err" role="alert" hidden></p>
+        <button type="submit" hidden></button>
+      </form>
+      <div class="media cap fill" data-drop="4"><img src="img/wesley-mesa-terno.jpg" alt="Wesley Bigoni sentado à mesa, de terno"></div>
+      <p class="legal" data-drop="1">Ao clicar no botão, você autoriza o uso dos seus dados (nome, e-mail e WhatsApp) para receber o resultado do quiz, conteúdos gratuitos e comunicações por e-mail e WhatsApp, conforme a Política de Privacidade e os Termos de Uso. Você pode cancelar quando quiser.</p>`,
+    onShow: () => {
+      const w = document.getElementById("f-whats");
+      w.addEventListener("input", () => { const d = w.value.replace(/\D/g, "").slice(0, 11); w.value = d.length > 6 ? `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}` : d.length > 2 ? `(${d.slice(0, 2)}) ${d.slice(2)}` : d; });
+      document.getElementById("lead").addEventListener("submit", e => { e.preventDefault(); cta.click(); });
+    },
+    onCta: () => {
+      const nome = document.getElementById("f-nome").value.trim();
+      const email = document.getElementById("f-email").value.trim();
+      const whats = document.getElementById("f-whats").value.replace(/\D/g, "");
+      const err = document.getElementById("f-err");
+      const fail = (msg, id) => { err.textContent = msg; err.hidden = false; document.getElementById(id).focus(); fit(); return false; };
+      if (nome.length < 2) return fail("Digite seu primeiro nome.", "f-nome");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail("Confira o e-mail: falta o @ ou o domínio.", "f-email");
+      if (whats.length < 10) return fail("Digite o WhatsApp com DDD.", "f-whats");
+      Object.assign(A, { nome: nome.split(" ")[0], email, whats: document.getElementById("f-whats").value });
+      return true;
+    } },
+
+  /* ================= FASE 4 · DIAGNÓSTICO, TRANSIÇÃO E CAPTURA ================= */
+  { n: 36, id: "fase4", cta: "CONTINUAR", render: () => {
+      const fam = A.filhos === "sim" ? "Segurança da família" : "Seus planos";
+      const lv = (v, map) => (map[v] ?? 30);
+      return `
+      <p class="hint" style="margin:0">Aqui está o seu resultado…</p>
+      <div class="selo">${A.nome ? esc(A.nome).toUpperCase() + ", COM" : "COM"} BASE NAS SUAS RESPOSTAS, VOCÊ TEM PERFIL PARA ATENDER SUA PRIMEIRA EMPRESA</div>
+      <div class="ad fill">
+        <div class="ad-col">${who("bad", A.fecha === "sempre" ? "😩 Contas no limite" : "😕 Só o salário")}<b class="cmp-h bad">Situação atual</b>
+          ${bar("Renda", lv(A.renda, { ate2: 15, "2a3": 25, "3a5": 40, "5+": 55 }), "bad")}
+          ${bar("Valorização", lv(A.justo, { nao: 15, melhor: 35, sim: 60 }), "bad")}
+          ${bar("Crescimento", lv(A.travada, { sim: 15, "as-vezes": 35, nao: 60 }), "bad")}
+          ${bar(fam, lv(A.fecha, { sempre: 10, "as-vezes": 25, zero: 35, sobra: 60 }), "bad")}</div>
+        <div class="ad-col good">${who("good", "😄 + até R$2.500/mês")}<b class="cmp-h good">Com o BPO</b>
+          ${bar("Renda", 85, "good")}${bar("Valorização", 90, "good")}${bar("Crescimento", 85, "good")}${bar(fam, 85, "good")}</div>
+      </div>
+      <p class="legal" data-drop="1">Situação atual calculada a partir das suas respostas.</p>`; } },
+
+  { n: 37, cta: "CONTINUAR", center: true, render: () => {
+      const t = (A.tarefas || []).filter(x => x !== "nenhuma");
+      const tecnica = ["fin", "cont"].includes(A.area);
+      const T = TEMPO[A.tempo] || TEMPO["30-60"];
+      const B = BONUS[A.trava] || BONUS.cliente;
+      return `
+      <h2>${A.nome ? esc(A.nome) + ", você" : "Você"} respondeu que…</h2>
+      <ul class="facts plist">
+        <li>${ico("area", A.area)}<span>Trabalha <b>${AREA_TXT[A.area] || "na sua área"}</b>. ${tecnica ? "É a base do serviço que as empresas terceirizam." : "Você já tem rotina; o técnico se aprende em poucas aulas."}</span></li>
+        <li data-drop="2">${ico("tarefa", t[0] || "nenhuma")}<span>${t.length ? `Já sabe <b>${TAREFA_TXT[t[0]]}</b>, uma das 3 Rotinas.` : "Vai começar do zero, como a maioria."}</span></li>
+        <li>${ico("tempo", A.tempo)}<span>Tem <b>${T[0]}</b> por dia: dá para atender <b>${T[1]}</b>.</span></li>
+        <li data-drop="3">${ico("trava", A.trava)}<span>Sua trava é ${B[0]}. O plano resolve com <b>${B[1]}</b>.</span></li>
+        <li data-drop="1">${ico("rede", A.rede)}<span>${A.rede === "ninguem" ? "Ainda não conhece empresários: o plano mostra onde achar no LinkedIn." : "Conhece donos de empresa: sua primeira cliente pode estar nos seus contatos."}</span></li>
+      </ul>
+      <div class="selo">POR ISSO, VOCÊ TEM PERFIL!</div>`; } },
+
+  { n: 38, center: true, render: () => `
+      <h2>Quão disposto(a) você está a conquistar sua <span class="hl-money">primeira empresa</span> nas próximas semanas?</h2>
+      <div class="opts">
+        ${opt("disposicao", "total", "🔥", "Não vou parar até conseguir")}
+        ${opt("disposicao", "duvida", "😬", "Quero, mas ainda tenho dúvidas")}
+        ${opt("disposicao", "curioso", "🧐", "Estou curioso(a)")}
+      </div>` },
+
+  { n: 39, cta: "CONTINUAR", center: true, render: () => {
+      const fam = A.filhos === "sim" ? "Tempo e segurança da família" : "Segurança para os seus planos";
+      return `
+      <h2>Veja a diferença <span class="hl-alert">ANTES</span> × <span class="hl-money">DEPOIS</span> de atender sua primeira empresa</h2>
+      <div class="ba">
+        <div class="ba-row bad"><div class="ba-pic phone">${phone("antes")}<span>ANTES</span></div>
+          <ul class="ba-list x"><li>O salário chega e não sobra</li><li>Esperar um aumento que não vem</li><li>O seu trabalho rende só para o dono</li><li>Não saber por onde começar</li></ul></div>
+        <div class="ba-arrow" aria-hidden="true">↓ com a sua primeira empresa atendida</div>
+        <div class="ba-row good"><div class="ba-pic phone">${phone("depois")}<span>DEPOIS</span></div>
+          <ul class="ba-list ok"><li>Uma entrada mensal além do salário</li><li>Cobrar pelo que você já sabe fazer</li><li>Cerca de 1h por dia, de casa</li><li>Um caminho até a 2ª, 3ª e 4ª empresa</li></ul></div>
+      </div>
+      <p class="legal" data-drop="1">Representação ilustrativa da transformação esperada. Não é uma garantia de resultado.</p>`; } },
+
+  { n: 40, cta: "CONTINUAR", render: () => `
+      <span class="badge" data-drop="3">Prova</span>
+      <h2>Quem vai te ensinar é quem faz <span class="hl-money">na vida real</span></h2>
+      <div class="media ps fill"><img src="img/wesley-pablo-selfie-q.jpg" alt="Wesley Bigoni e Pablo Marçal em um evento"></div>
+      <ul class="facts tight">
+        <li><span class="ck">✓</span><span>CFO das empresas do Pablo Marçal, no Brasil e nos EUA</span></li>
+        <li><span class="ck">✓</span><span>Dono de um BPO com clientes pagando cerca de <b>R$2.500/mês</b></span></li>
+        <li data-drop="2"><span class="ck">✓</span><span>Consultor em fusões e análises de aquisição</span></li>
+      </ul>` },
+
+  { n: 41, cta: "CONTINUAR", render: () => `
+      <p class="hint" style="margin:0" data-drop="2">Antes de começar, quase todo mundo que trabalha em empresa me conta a mesma história…</p>
+      <h2>“Wesley, eu sei fazer. Mas <span class="hl-alert">não sei vender</span>, e não tenho tempo pra outro emprego.”</h2>
+      <div class="media wbt fill"><img src="img/wesley-bracos-terno.jpg" alt="Wesley Bigoni de terno e braços cruzados no escritório"></div>
+      <div class="echo bad-echo">Eles achavam que renda extra era <b>um segundo emprego</b>. E isso sempre assustava.</div>` },
+
+  { n: 42, cta: "CONTINUAR", center: true, render: () => {
+      const t = (A.tarefas || []);
+      const R = (t.includes("extrato") || t.includes("pagar") || t.includes("boleto")) ? 1 : t.includes("planilha") ? 2 : t.includes("relatorio") ? 3 : 0;
+      return `
+      <h2>Renda extra com o que você já faz no trabalho <span class="hl-money">não é um segundo emprego.</span></h2>
+      <p class="lead" data-drop="1">Você não precisa virar vendedor nem trabalhar mais 8 horas. É atender <b>UMA</b> empresa pequena, cerca de 1h por dia, cuidando de 3 rotinas que o dono não tem tempo de fazer:</p>
+      <ol class="rot rot-ico">
+        <li${R === 1 ? ' class="me"' : ""}><img src="img/rotina-pagamentos.png" alt=""><b>Organizar os pagamentos</b><span>Saber o que é, pra que é e quem pediu cada pagamento.</span></li>
+        <li${R === 2 ? ' class="me"' : ""}><img src="img/rotina-caixa.png" alt=""><b>Prever o caixa</b><span>Avisar o dono antes de faltar dinheiro.</span></li>
+        <li${R === 3 ? ' class="me"' : ""}><img src="img/rotina-resultado.png" alt=""><b>Mostrar o resultado do mês</b><span>Os 3 números que o dono precisa ler.</span></li>
+      </ol>
+      ${R ? `<div class="echo" data-drop="2">✅ Pelo que você respondeu, você <b>já faz a rotina ${R}</b> no seu trabalho.</div>` : ""}`; } },
+
+  { n: 43, render: () => `
+      <p class="hint" style="margin:0" data-drop="2">Com base em tudo que você respondeu…</p>
+      <h2>Você vai receber o <span class="hl-money">Plano do Primeiro Cliente</span></h2>
+      <div class="trilha fill" role="img" aria-label="Etapas do plano: hoje, domina as 3 Rotinas, envia a primeira proposta, atende a primeira empresa">
+        <div class="tr-step"><i></i><b>Hoje</b><span>Você já tem a base</span></div>
+        <div class="tr-step"><i></i><b>Domina as 3 Rotinas</b><span>Conciliação, fluxo e DRE</span></div>
+        <div class="tr-step"><i></i><b>Primeira proposta</b><span>Com o preço e o script prontos</span></div>
+        <div class="tr-step goal"><i></i><b>Primeira empresa atendida</b><span>Até R$2.500 por mês</span></div>
+      </div>
+      <h2 style="font-size:clamp(15px,2.4dvh,18px)">Você acredita que conseguiria com esse plano nas mãos?</h2>
+      <div class="opts">
+        ${opt("acredita", "pronto", "🙌", "Sim, estou pronto(a)")}
+        ${opt("acredita", "direcao", "🧭", "Com certeza, só preciso de direção")}
+        ${opt("acredita", "tentar", "🤞", "Acho que sim, quero tentar")}
+      </div>` },
+
+  { n: 44, auto: true, center: true, render: () => `
+      <h2>Montando o seu Plano do Primeiro Cliente…</h2>
+      <div class="load"><div class="load-top"><span id="ld-txt">Organizando as 3 Rotinas</span><b id="ld-pct">0%</b></div><div class="load-bar"><i id="ld-bar"></i></div></div>`,
+    onShow: () => loader(["Organizando as 3 Rotinas", "Separando os bônus da sua trava", "Finalizando o seu plano"]) },
+
+
+  /* ================= PÁGINA DE VENDAS ENXUTA: resultado + plano + oferta numa página só (rola; botão fixo) ================= */
+  { n: 45, id: "fase5", scroll: true, cta: "COMPRAR AGORA", render: () => {
+      const nome = esc(A.nome || "");
+      const hot = { capaz: 1, preco: 2, cliente: 3, tempo: 4 }[A.trava];
+      const TBD = `<span class="tbd">a definir</span>`;
+      const trava = BONUS[A.trava] ? A.trava : "cliente";
+      const brl = v => "R$" + v.toLocaleString("pt-BR");
+      const passo = (i, t) => `<li class="${hot === i ? "hot" : ""}">${t}${hot === i ? ` <em>resolve a sua trava</em>` : ""}</li>`;
+      const lvl = (label, val, pct, kind) => `<div class="lv"><b>${label}</b><span>${val}</span><i class="lv-t ${kind}"><u style="width:${pct}%"></u><s style="left:calc(${pct}% - 9px)"></s></i></div>`;
+      const BON = {
+        cliente: ["Kit de abordagem do primeiro cliente", "Mensagens prontas para chegar no empresário", "Textos para WhatsApp, LinkedIn e indicações, com o roteiro de acompanhamento até ele responder.", "img/bonus-kit-abordagem-v3.jpg", 297],
+        tempo: ["Script: como atender seu primeiro cliente", "O roteiro da primeira reunião", "Do “oi” ao fechamento: o que falar, o que perguntar e como apresentar o seu serviço.", "img/bonus-script-v3.jpg", 197],
+        preco: ["Planilha de precificação", "Saiba exatamente quanto cobrar", "A planilha calcula o valor de cada empresa pelo trabalho que ela dá. Nada de chutar preço.", "img/bonus-precificacao-v3.jpg", 197],
+        capaz: ["Planilha de diagnóstico do cliente", "O raio-X do financeiro da empresa", "Chegue na primeira reunião sabendo o que perguntar e onde estão os problemas do cliente.", "img/bonus-diagnostico-v3.jpg", 197]
+      };
+      const bonus = [...["cliente", "tempo", "preco", "capaz"].sort((x, y) => (y === trava) - (x === trava)).map(k => BON[k]),
+        ["Modelo de contrato de BPO", "Formalize o serviço como profissional", "Contrato de prestação de serviços pronto para preencher e enviar ao cliente.", "img/bonus-contrato-v3.jpg", 197],
+        ["Planilha de gestão de gastos pessoais", "Organize o seu dinheiro primeiro", "Antes de cuidar do financeiro dos outros, coloque o seu em ordem.", "", 97],
+        ["OKRs diários", "Metas simples para não parar no meio", "A rotina de cerca de 1h por dia, organizada em metas pequenas.", "", 97]];
+      const CURSO = 497, total = CURSO + bonus.reduce((t, x) => t + x[4], 0);
+      const motivo = { dividas: "e pagar as suas dívidas", familia: "e dar mais conforto para a sua família", guardar: "e começar a guardar dinheiro", sonho: "e realizar aquele plano que ficou para depois" }[A.uso] || "e ter uma renda além do salário";
+      const priceBox = `<div class="mm-price">
+          <div class="mm-price-h">${Math.round((1 - 47 / total) * 100)}% OFF · PREÇO DE LANÇAMENTO</div>
+          <div class="mm-price-b"><b>Do 0 ao 1º Cliente para ${nome || "você"} conquistar a primeira empresa ${motivo}</b>
+            <div class="mm-price-v"><small>De: <s>${brl(total)}</s> por</small><strong>R$47</strong><small>pagamento único</small></div></div>
+          <ul class="mm-price-why">
+            <li>É menos de <b>2% do que UMA empresa paga por mês</b> por esse serviço (até R$2.500)</li>
+            <li>Menos de <b>R$1,60 por dia</b> durante um mês, o preço de um café</li>
+          </ul>
+          <p class="mm-price-up">Preço de lançamento: depois da abertura da Mentoria, na Black Friday, o valor sobe.</p>
+        </div>
+        <p class="mm-pay">Cartão de crédito · Pix</p>`;
+      const collage = `<div class="mm-pack"><img src="img/bonus-leque.jpg" alt="Capas dos bônus: Modelo de contrato, Planilha de precificação, Planilha de diagnóstico, Kit de abordagem e Script do primeiro cliente"></div>`;
+      const faq = [
+        ["Preciso ser contador ou ter CNPJ?", `Não precisa ser contador: é para quem já trabalha com rotina de empresa (financeiro, administrativo, compras, RH…). O técnico do BPO você aprende nas aulas. Sobre CNPJ: ${TBD} (resposta do Wesley).`],
+        ["Quanto tempo por dia eu preciso?", "Cerca de 1 hora por dia para atender uma empresa pequena, fora do seu expediente."],
+        ["Como recebo o acesso?", `Por e-mail, logo após a compra, para a área de alunos. Também enviamos o link no WhatsApp.`],
+        ["E se eu comprar e não gostar?", "Você tem 7 dias de garantia. Se não fizer sentido para você, devolvemos 100% do valor, sem perguntas."]
+      ];
+      return `
+      <h1 class="mm-h1">Ei ${nome || ""}…<br>O seu <span class="hl-money">Plano do Primeiro Cliente</span> ficou pronto!</h1>
+
+      <div class="mm-ad">
+        <b class="mm-ad-h bad">ANTES</b><b class="mm-ad-h good">DEPOIS</b>
+        <div class="v-pic"><img src="img/carteira-vazia.jpg" alt="Carteira vazia"></div>
+        <div class="v-pic"><img src="img/carteira-cheia.jpg" alt="Carteira com notas de 100 reais"></div>
+        ${lvl("Renda extra", "Nenhuma", 6, "bad")}${lvl("Renda extra", "Até R$2.500/mês", 85, "good")}
+        ${lvl("Valorização", "Baixa", 25, "bad")}${lvl("Valorização", "Alta", 88, "good")}
+        ${lvl("Controle do tempo", "Pouco", 22, "bad")}${lvl("Controle do tempo", "Muito", 80, "good")}
+        ${lvl(A.filhos === "sim" ? "Segurança da família" : "Segurança financeira", "Baixa", 20, "bad")}${lvl(A.filhos === "sim" ? "Segurança da família" : "Segurança financeira", "Alta", 86, "good")}
+      </div>
+
+      <div class="mm-name">${nome || "E agora"}…</div>
+      <div class="media vid mm-vid"><video src="${vsrc("video/prova.mp4")}" poster="img/prova-poster.jpg" data-nopause playsinline disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback" preload="auto" aria-label="Wesley Bigoni ao lado de Pablo Marçal"></video></div>
+      <p class="mm-sign">Wesley Bigoni, aqui!</p>
+      <p class="mm-sub">Olha o que você vai receber ↓</p>
+
+      <h2 class="mm-h2">VOCÊ VAI APRENDER, PASSO A PASSO:</h2>
+      <article class="mm-card"><img class="mm-face" src="img/wesley-escritorio-terno.jpg" alt="Wesley Bigoni de terno no escritório"><b>10 AULAS CURTAS E PRÁTICAS, NA TELA</b><p>Primeiro o porquê, depois o passo a passo no computador. Menos de 10 minutos cada.</p></article>
+      <article class="mm-card"><div class="mm-icons"><img src="img/rotina-pagamentos.png" alt=""><img src="img/rotina-caixa.png" alt=""><img src="img/rotina-resultado.png" alt=""></div><b>AS 3 ROTINAS QUE AS EMPRESAS TERCEIRIZAM</b><p>Organizar os pagamentos, prever o caixa e mostrar o resultado do mês para o dono.</p></article>
+      <article class="mm-card"><b>OS 4 PASSOS ATÉ A SUA PRIMEIRA EMPRESA</b><ol class="mm-steps">
+        ${passo(1, "Descubra o serviço que você já sabe fazer")}${passo(2, "Saiba quanto cobrar e o que entregar")}${passo(3, "Feche com quem já está perto de você")}${passo(4, "Atenda como profissional desde o primeiro cliente")}</ol></article>
+
+      <div class="mm-soft">Ou seja, você não vai precisar adivinhar nada…</div>
+      <div class="mm-green">EU TE ENTREGO TUDO PRONTO PARA VOCÊ CONQUISTAR A SUA PRIMEIRA EMPRESA</div>
+      <div class="mm-lightgreen">Do primeiro contato ao contrato assinado</div>
+
+      <div class="mm-red">“WESLEY, MAS E SE EU NÃO SOUBER VENDER?”</div>
+      <p class="mm-calm">FIQUE TRANQUILO!<br>Para garantir que você consiga conquistar e atender a sua primeira empresa…</p>
+      <div class="mm-soft">Você terá:</div>
+      ${bonus.map((x, i) => `<div class="mm-bh">#BÔNUS 0${i + 1}: ${x[0]}</div>
+        <article class="mm-bonus">${x[3] ? `<img src="${x[3]}" alt="Capa do bônus ${x[0]}">` : ""}<b>${x[1]}</b><p>${x[2]}</p><span class="mm-val">VALOR ESTIMADO: <s>${brl(x[4])}</s></span>${i === 0 ? `<em class="mm-tag">Resolve a sua trava</em>` : ""}</article>`).join("")}
+
+      <div class="mm-obj"><b>“E se eu não tiver tempo?”</b><p>Uma empresa pequena cabe em cerca de 1h por dia, fora do seu expediente.</p></div>
+      <div class="mm-obj"><b>“E se não for para mim?”</b><p>Você tem 7 dias de garantia. Assista às aulas: se não fizer sentido, devolvemos 100% do seu dinheiro.</p></div>
+
+      <p class="mm-lapis">Se somarmos tudo na ponta do lápis, daria…</p>
+      <ul class="mm-stack">
+        <li><b>FORMAÇÃO "DO 0 AO 1º CLIENTE"</b><span>${brl(CURSO)}</span></li>
+        ${bonus.map(x => `<li><b>${x[0].toUpperCase()}</b><span>${brl(x[4])}</span></li>`).join("")}
+      </ul>
+      <p class="mm-total"><s>${brl(total)}</s></p>
+      <p class="mm-porem">PORÉM, VOCÊ TEM A OPORTUNIDADE DE LEVAR TUDO ISSO POR…</p>
+      ${collage}
+      ${priceBox}
+
+      <div class="mm-why">
+        <b>“Por que só R$47?”</b>
+        <p>Porque eu quero formar o maior número de pessoas prestando serviços como BPO. Sozinho, eu ajudo algumas empresas. Ensinando você, chegamos mais longe: quem começa comigo agora vai ser a base de um movimento.</p>
+        <span>Wesley Bigoni</span>
+      </div>
+
+      <h2 class="mm-h2">QUEM VAI TE ENSINAR</h2>
+      <div class="v-img"><img src="img/wesley-pablo-evento.jpg" alt="Wesley Bigoni ao lado de Pablo Marçal em um evento"></div>
+      <div class="v-stats">
+        <div>SOU O <b>CFO DAS EMPRESAS DO PABLO MARÇAL</b>, NO BRASIL E NOS EUA</div>
+        <div>PRESTO SERVIÇOS COMO <b>BPO FINANCEIRO</b> PARA EMPRESAS</div>
+        <div>MEUS CLIENTES PAGAM CERCA DE <b>R$2.500 POR MÊS</b></div>
+      </div>
+
+      <h2 class="mm-h2">COMECE AGORA O SEU <span class="hl-money">PLANO DO PRIMEIRO CLIENTE</span></h2>
+      ${collage}
+      ${priceBox}
+
+      <div class="v-guar"><div class="v-img v-guar-img"><img src="img/garantia-7-dias.jpg" alt="Wesley Bigoni com o selo de garantia de 7 dias"></div></div>
+      <h2 class="mm-h2 good">GARANTIA DE 7 DIAS DE DEVOLUÇÃO DO DINHEIRO</h2>
+      <p class="v-p center">Assista às aulas e use os bônus. Se em até 7 dias você achar que não é para você, devolvemos 100% do seu dinheiro. Risco zero.</p>
+
+      <h2 class="mm-h2">PERGUNTAS FREQUENTES</h2>
+      <div class="v-faq">${faq.map(f => `<details><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join("")}</div>
+
+      <footer class="v-foot">
+        <p>Copyright © 2026 · Todos os direitos reservados.</p>
+        <p><b>Razão social ${TBD}</b> · CNPJ ${TBD}</p>
+        <p><b>Aviso legal:</b> produto digital educacional. Não é consultoria financeira, contábil ou jurídica. Não há garantia de resultados: eles dependem da dedicação e da aplicação de cada aluno. Garantia legal de 7 dias (art. 49 do CDC).</p>
+      </footer>`; },
+    onShow: () => {},
+    onCta: () => { if (CHECKOUT_URL) location.href = CHECKOUT_URL; else toast("Link do checkout da plataforma: a definir"); return false; } },
+];
+
+/* componentes */
+function ph(tag, title, note, cls) { return `<div class="ph ${cls || ""}"><span class="tag">INSERÇÃO · ${tag}</span><strong>${title}</strong><span>${note}</span></div>`; }
+function pic(key, val, label, src) {
+  return `<button type="button" class="pic${A[key] === val ? " on" : ""}" data-k="${key}" data-v="${val}"><span class="ph-img"><img src="${src}" alt=""></span><span class="lbl">${label}</span></button>`;
+}
+function opt(key, val, em, label, small) {
+  return `<button type="button" class="opt${A[key] === val ? " on" : ""}" data-k="${key}" data-v="${val}"><span class="em">${em}</span><span class="tx">${label}${small ? `<small data-drop="1">${small}</small>` : ""}</span></button>`;
+}
+function chk(val, em, label) {
+  const on = (A.tarefas || []).includes(val);
+  return `<button type="button" class="opt${on ? " on" : ""}" data-multi="${val}" aria-pressed="${on}"><span class="em">${em}</span><span class="tx">${label}</span><span class="box">${on ? "✓" : ""}</span></button>`;
+}
+const TEMPO = {
+  "30-": ["menos de 30 minutos", "1 empresa pequena"], "30-60": ["até 1 hora", "1 empresa"],
+  "1-2": ["de 1 a 2 horas", "até 2 empresas"], "2+": ["mais de 2 horas", "3 empresas ou mais"]
+};
+const BONUS = {
+  cliente: ["não saber conseguir cliente", "o Kit de abordagem do primeiro cliente", "img/bonus-kit-abordagem-v3.jpg"], tempo: ["a falta de tempo", "o Script de atendimento do primeiro cliente", "img/bonus-script-v3.jpg"],
+  preco: ["não saber quanto cobrar", "a Planilha de precificação", "img/bonus-precificacao-v3.jpg"], capaz: ["o medo de não dar conta", "a Planilha de diagnóstico do cliente", "img/bonus-diagnostico-v3.jpg"],
+  golpe: ["o medo de curso que não funciona", "a garantia de 7 dias", "img/wesley-bracos-centro.jpg"]
+};
+function esc(v) { return String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function personImg(triste) { const a = { "18-29": "18-29", "29-39": "29-39", "39-49": "39-49", "50+": "50" }[A.idade] || "29-39"; return `img/${sexo()}-${a}${triste ? "-triste" : ""}.jpg`; }
+function who(kind, cap) { return `<div class="who ${kind}"><img src="${personImg(kind === "bad")}" alt=""><span class="cap">${cap}</span></div>`; }
+/* ilustrações próprias da tela "Você respondeu que…": uma por resposta, desenhadas em SVG */
+const G = "var(--ico-line)", G2 = "var(--ico-soft)";
+const ICO = {
+  area: {
+    fin: `<text x="50" y="36" text-anchor="middle" font-size="18" font-weight="800" fill="${G}">R$</text><rect x="28" y="44" width="44" height="10" rx="5"/><rect x="24" y="56" width="44" height="10" rx="5"/><rect x="30" y="68" width="44" height="10" rx="5"/>`,
+    cont: `<rect x="30" y="20" width="40" height="60" rx="6"/><path d="M38 34h24M38 44h24"/><text x="50" y="72" text-anchor="middle" font-size="20" font-weight="800" fill="${G}">%</text>`,
+    adm: `<path d="M22 34h20l6 7h30v35H22z"/><path d="M34 56h32M34 64h20"/>`,
+    comp: `<path d="M20 28h10l8 34h32l6-22H34"/><circle cx="42" cy="72" r="4"/><circle cx="66" cy="72" r="4"/>`,
+    rh: `<circle cx="38" cy="40" r="9"/><circle cx="62" cy="40" r="9"/><path d="M22 74c0-14 32-14 32 0M46 74c0-14 32-14 32 0"/>`,
+    out: `<path d="M50 22l8 17 18 2-13 13 4 18-17-9-17 9 4-18-13-13 18-2z"/>`
+  },
+  tarefa: {
+    pagar: `<rect x="28" y="20" width="44" height="60" rx="6"/><path d="M36 36l4 4 7-8M36 52l4 4 7-8M36 68l4 4 7-8M52 36h12M52 52h12M52 68h12"/>`,
+    extrato: `<path d="M22 40L50 24l28 16z"/><path d="M30 46v22M43 46v22M57 46v22M70 46v22M22 74h56"/>`,
+    boleto: `<rect x="20" y="30" width="60" height="40" rx="6"/><path d="M30 40v20M35 40v20M42 40v20M46 40v20M53 40v20M60 40v20M64 40v20M70 40v20" stroke-width="3"/>`,
+    planilha: `<rect x="22" y="26" width="56" height="48" rx="6"/><path d="M22 42h56M22 58h56M42 26v48M60 26v48"/>`,
+    relatorio: `<path d="M24 76h52"/><rect x="30" y="52" width="9" height="24" rx="2"/><rect x="46" y="40" width="9" height="36" rx="2"/><rect x="62" y="28" width="9" height="48" rx="2"/>`,
+    nenhuma: `<path d="M50 78V48"/><path d="M50 52c-14 0-22-8-22-22 14 0 22 8 22 22zM50 46c0-12 8-20 22-20 0 12-8 20-22 20z"/>`
+  },
+  trava: {
+    cliente: `<path d="M20 26h38a6 6 0 016 6v18a6 6 0 01-6 6H34l-10 9v-9h-4a6 6 0 01-6-6V32a6 6 0 016-6z"/><path d="M48 62h18l10 9v-9h0a6 6 0 006-6V44"/>`,
+    tempo: `<rect x="28" y="22" width="44" height="58" rx="6"/><rect x="40" y="16" width="20" height="10" rx="3"/><circle cx="38" cy="42" r="2.5"/><circle cx="38" cy="54" r="2.5"/><circle cx="38" cy="66" r="2.5"/><path d="M46 42h16M46 54h16M46 66h12"/>`,
+    preco: `<path d="M24 28h26l28 28-24 24-30-30z"/><circle cx="36" cy="40" r="4"/><text x="56" y="64" text-anchor="middle" font-size="15" font-weight="800" fill="${G}" transform="rotate(45 56 60)">R$</text>`,
+    capaz: `<path d="M50 20l24 10v18c0 16-10 26-24 32-14-6-24-16-24-32V30z"/><path d="M39 50l8 8 15-16"/>`,
+    golpe: `<path d="M50 20l24 10v18c0 16-10 26-24 32-14-6-24-16-24-32V30z"/><text x="50" y="62" text-anchor="middle" font-size="24" font-weight="800" fill="${G}">7</text>`
+  },
+  rede: {
+    varios: `<path d="M50 50L26 30M50 50L74 30M50 50L22 58M50 50L78 58M50 50L38 78M50 50L62 78"/><circle cx="50" cy="50" r="9" fill="${G}"/><circle cx="26" cy="30" r="6"/><circle cx="74" cy="30" r="6"/><circle cx="22" cy="58" r="6"/><circle cx="78" cy="58" r="6"/><circle cx="38" cy="78" r="6"/><circle cx="62" cy="78" r="6"/>`,
+    poucos: `<path d="M50 50L28 34M50 50L72 66"/><circle cx="50" cy="50" r="9" fill="${G}"/><circle cx="28" cy="34" r="7"/><circle cx="72" cy="66" r="7"/>`,
+    ninguem: `<circle cx="44" cy="44" r="18"/><path d="M57 57l17 17"/><circle cx="44" cy="40" r="5"/><path d="M35 54c2-8 16-8 18 0"/>`
+  }
+};
+function ico(kind, v) {
+  let body;
+  if (kind === "tempo") {
+    const f = { "30-": .25, "30-60": .5, "1-2": .75, "2+": 1 }[v] ?? .5;
+    const lbl = { "30-": "30m", "30-60": "1h", "1-2": "2h", "2+": "2h+" }[v] || "1h";
+    const C = 2 * Math.PI * 28;
+    body = `<circle cx="50" cy="50" r="28" stroke="${G2}"/><circle cx="50" cy="50" r="28" stroke-dasharray="${(f * C).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 50 50)" stroke-width="7"/><text x="50" y="57" text-anchor="middle" font-size="19" font-weight="800" fill="${G}" stroke="none">${lbl}</text>`;
+  } else body = (ICO[kind] || {})[v] || ICO.area.out;
+  return `<span class="th ico" aria-hidden="true"><svg viewBox="0 0 100 100" fill="none" stroke="${G}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><rect x="0" y="0" width="100" height="100" fill="url(#icobg)" stroke="none"/>${body}</svg></span>`;
+}
+
+/* pré-carrega todas as fotos em segundo plano logo depois da primeira tela, e os vídeos quando o lead se aproxima deles */
+const IMGS = ["genero-homem", "genero-mulher", "genero-homem-triste", "genero-mulher-triste",
+  ...["homem", "mulher"].flatMap(g => ["18-29", "29-39", "39-49", "50"].flatMap(a => [`${g}-${a}`, `${g}-${a}-triste`]))].map(n => `img/${n}.jpg`)
+  .concat(["wesley-pablo.webp", "wesley-mesa-lateral.webp", "prova-contrato.jpg", "wesley-bracos-centro.jpg", "wesley-apontando.jpg", "bonus-kit-abordagem-v3.jpg", "bonus-script-v3.jpg", "bonus-leque.jpg", "bonus-precificacao-v3.jpg", "bonus-diagnostico-v3.jpg", "garantia-7-dias.jpg", "garantia-7-dias-q.jpg", "wesley-bpo-v2-poster.jpg", "pix-2500.jpg", "bpo-notebook.jpg", "wesley-palestra.jpg", "wesley-pablo-selfie-q.jpg", "wesley-bracos-terno.jpg", "rotina-pagamentos.png", "rotina-caixa.png", "rotina-resultado.png", "wesley-mesa-terno.jpg", "bonus-contrato-v3.jpg", "carteira-vazia.jpg", "carteira-cheia.jpg", "prova-poster.jpg", "wesley-escritorio-terno.jpg", "wesley-pablo-evento.jpg", "produto-capa.jpg", "wesley-escritorio-moderno.jpg", "wesley-escritorio.jpg", "wesley-mesa-centro.webp"].map(n => `img/${n}`));
+const preloaded = new Set();
+// fila: baixa 4 fotos por vez, na ordem em que aparecem, para as primeiras chegarem rápido
+const keep = [], queue = [];
+let busy = 0, imgsDone = () => {};
+const imgsReady = new Promise(r => { imgsDone = r; });
+function pump() {
+  while (busy < 4 && queue.length) {
+    const src = queue.shift(); busy++;
+    const i = new Image(); i.decoding = "async"; keep.push(i);
+    i.onload = i.onerror = () => { busy--; if (i.decode) i.decode().catch(() => {}); pump(); };
+    i.src = src;
+  }
+  if (!busy && !queue.length) imgsDone();
+}
+function preloadImgs(list) { list.forEach(src => { if (preloaded.has(src)) return; preloaded.add(src); queue.push(src); }); pump(); }
+const VBLOB = {};
+const vsrc = src => VBLOB[src] || src;
+const vjobs = {};
+function preloadVideo(src) {
+  return vjobs[src] || (vjobs[src] = fetch(src).then(r => r.ok ? r.blob() : null).then(b => { if (b && b.size) VBLOB[src] = URL.createObjectURL(b); }).catch(() => {}));
+}
+const idle = window.requestIdleCallback || (fn => setTimeout(fn, 600));
+setTimeout(() => {
+  // primeiro as fotos de idade (tela 2), depois o resto
+  preloadImgs(IMGS.filter(x => /genero-|(homem|mulher)-\d/.test(x) && !/triste/.test(x)));
+  preloadImgs(IMGS);
+}, 0);
+
+/* vídeos começam sozinhos ao abrir a tela; se o navegador bloquear o som, toca mudo e mostra o botão de ativar som */
+function autoplay() {
+  app.querySelectorAll("video").forEach(v => {
+    v.playsInline = true;
+    // vídeo sem pausa: sem controles; tocar na tela só dá play/ativa o som, nunca pausa
+    if (v.hasAttribute("data-nopause") && !v.dataset.bound) {
+      v.dataset.bound = "1";
+      v.parentElement.addEventListener("click", () => { if (v.muted) { v.muted = false; v.parentElement.querySelector(".unmute")?.remove(); } if (v.paused) v.play().catch(() => {}); });
+    }
+    v.muted = false;
+    v.play().catch(() => {
+      v.muted = true;
+      v.play().catch(() => {});
+      const box = v.parentElement;
+      if (box.querySelector(".unmute")) return;
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "unmute"; b.textContent = "🔊 Toque para ativar o som";
+      b.addEventListener("click", () => { v.muted = false; v.currentTime = 0; v.play().catch(() => {}); b.remove(); });
+      box.appendChild(b);
+    });
+  });
+}
+/* order bumps do checkout: tudo o que foi citado na reunião e no funil que não entrou nos 7 bônus */
+const BUMPS = [
+  ["o Kit Reunião Mensal de Consultoria", "O roteiro da reunião de 1 hora que o Wesley faz todo mês com os clientes do BPO + modelo de relatório de direcionamento. É o que faz o cliente indicar você e pagar mais.", 297],
+  ["o Modelo de Proposta Comercial de BPO", "A proposta pronta para enviar ao empresário: escopo das 3 Rotinas, prazos, valor e condições. É só preencher com os dados do cliente.", 197],
+  ["os Estudos de Caso Reais do Wesley", "Análises de decisões financeiras de verdade: fusão de empresas, aquisições e cortes de custo. Os bastidores do olhar de CFO para você usar com seus clientes.", 297],
+  ["o Guia de Precificação Avançada", "Como subir o seu preço do primeiro para o quarto cliente e como cobrar pela reunião mensal de consultoria à parte.", 197]
+];
+function toast(msg) {
+  let t = document.getElementById("toast");
+  if (!t) { t = document.createElement("div"); t.id = "toast"; t.setAttribute("role", "status"); document.body.appendChild(t); }
+  t.textContent = msg; t.classList.add("on");
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600);
+}
+function th(src, cls) { return `<span class="th ${cls}"><img src="${src}" alt=""></span>`; }
+/* celular fictício de banco genérico (sem marca real), no cenário da imagem do Pix: fundo rosado, app roxo */
+function phone(kind) {
+  const depois = kind === "depois";
+  const notif = depois
+    ? `<rect x="22" y="40" width="96" height="30" rx="7" fill="#ffffff" opacity=".96"/><rect x="28" y="47" width="14" height="14" rx="4" fill="#16a34a"/><path d="M31 54l3 3 5-6" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><text x="46" y="53" font-size="6.4" fill="#374151">Pix recebido</text><text x="46" y="63" font-size="8.2" font-weight="800" fill="#16a34a">+ R$ 2.500,00</text>`
+    : `<rect x="22" y="40" width="96" height="30" rx="7" fill="#ffffff" opacity=".96"/><rect x="28" y="47" width="14" height="14" rx="4" fill="#dc2626"/><text x="35" y="58" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">!</text><text x="46" y="53" font-size="6.4" fill="#374151">Fatura vence amanhã</text><text x="46" y="63" font-size="8.2" font-weight="800" fill="#dc2626">R$ 1.284,00</text>`;
+  return `<svg viewBox="0 0 140 220" preserveAspectRatio="xMidYMid meet" role="img" aria-label="${depois ? "Ilustração: Pix de R$2.500 recebido" : "Ilustração: saldo baixo no fim do mês"}">
+    <rect width="140" height="220" fill="#dcc3c9"/>
+    <rect x="16" y="14" width="108" height="206" rx="18" fill="#111827"/>
+    <rect x="21" y="19" width="98" height="201" rx="14" fill="#f4f1f7"/>
+    <rect x="21" y="19" width="98" height="78" rx="14" fill="#7c3aed"/><rect x="21" y="80" width="98" height="17" fill="#7c3aed"/>
+    <rect x="52" y="23" width="36" height="6" rx="3" fill="#111827"/>
+    <text x="28" y="38" font-size="6.5" fill="#ede9fe">9:41</text>
+    ${notif}
+    <text x="28" y="88" font-size="7" fill="#ede9fe">Olá!</text>
+    <rect x="27" y="104" width="86" height="46" rx="8" fill="#ffffff"/>
+    <text x="34" y="117" font-size="6.6" fill="#6b7280">Saldo disponível</text>
+    <text x="34" y="136" font-size="15" font-weight="800" fill="${depois ? "#111827" : "#dc2626"}">${depois ? "R$ 2.537,90" : "R$ 37,90"}</text>
+    <rect x="27" y="157" width="86" height="34" rx="8" fill="#ffffff"/>
+    <text x="34" y="170" font-size="6.2" fill="#6b7280">${depois ? "Entradas do mês" : "Contas a pagar"}</text>
+    <text x="34" y="183" font-size="8.6" font-weight="700" fill="${depois ? "#16a34a" : "#dc2626"}">${depois ? "+ R$ 2.500,00" : "- R$ 1.284,00"}</text>
+    <text x="70" y="208" text-anchor="middle" font-size="5.6" fill="#9ca3af">Imagem ilustrativa</text>
+  </svg>`;
+}
+/* ilustração escassez × prosperidade da página de vendas (desenhada em SVG) */
+function moneyArt(kind) {
+  if (kind === "antes") return `<svg viewBox="0 0 200 200" role="img" aria-label="Ilustração: carteira vazia e conta vencida">
+    <rect width="200" height="200" fill="#fdecec"/>
+    <g transform="rotate(-8 120 60)"><rect x="96" y="22" width="72" height="88" rx="4" fill="#fff" stroke="#e5e7eb"/><path d="M106 40h44M106 52h52M106 64h36M106 76h48" stroke="#d1d5db" stroke-width="4" stroke-linecap="round"/>
+      <rect x="104" y="84" width="58" height="18" rx="3" fill="none" stroke="#dc2626" stroke-width="3" transform="rotate(-10 133 93)"/><text x="133" y="98" text-anchor="middle" font-size="11" font-weight="800" fill="#dc2626" transform="rotate(-10 133 93)">VENCIDA</text></g>
+    <path d="M30 104h120a12 12 0 0112 12v48a12 12 0 01-12 12H30a12 12 0 01-12-12v-48a12 12 0 0112-12z" fill="#7c4a2d"/>
+    <path d="M18 120h132" stroke="#5e3720" stroke-width="3"/>
+    <path d="M26 112c10-22 118-22 128 0" fill="#8f5a38"/>
+    <rect x="128" y="132" width="34" height="22" rx="6" fill="#5e3720"/><circle cx="140" cy="143" r="4" fill="#c9a27e"/>
+    <path d="M60 128c6 6 18 6 24 0" stroke="#5e3720" stroke-width="3" fill="none" stroke-linecap="round" opacity=".7"/>
+    <path d="M40 92l-6-12M52 88l0-14M64 92l6-12" stroke="#9ca3af" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="2 5"/>
+    <g transform="translate(70 70)"><ellipse cx="0" cy="0" rx="7" ry="4" fill="#6b7280"/><ellipse cx="-6" cy="-5" rx="6" ry="3.5" fill="#d1d5db" opacity=".9" transform="rotate(-25 -6 -5)"/><ellipse cx="6" cy="-5" rx="6" ry="3.5" fill="#d1d5db" opacity=".9" transform="rotate(25 6 -5)"/></g>
+  </svg>`;
+  const note = (x, y, r) => `<g transform="translate(${x} ${y}) rotate(${r})"><rect x="-44" y="-20" width="88" height="40" rx="4" fill="#22c55e" stroke="#15803d" stroke-width="2"/><rect x="-36" y="-12" width="72" height="24" rx="3" fill="none" stroke="#bbf7d0" stroke-width="2"/><circle cx="0" cy="0" r="8" fill="#bbf7d0"/><text x="0" y="4" text-anchor="middle" font-size="10" font-weight="800" fill="#15803d">R$</text></g>`;
+  const coin = (x, y) => `<ellipse cx="${x}" cy="${y}" rx="15" ry="6" fill="#d97706"/><ellipse cx="${x}" cy="${y - 4}" rx="15" ry="6" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"/>`;
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="Ilustração: pilhas de dinheiro e gráfico subindo">
+    <rect width="200" height="200" fill="#ecfdf3"/>
+    <path d="M18 70l40-18 34 10 46-30 44-14" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M168 10l16 8-14 12" fill="none" stroke="#16a34a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${note(70, 168, 0)}${note(70, 150, 0)}${note(70, 132, 0)}${note(70, 114, -4)}
+    ${note(140, 172, 0)}${note(140, 154, 0)}${note(140, 136, 3)}
+    ${coin(30, 186)}${coin(30, 178)}${coin(30, 170)}${coin(178, 188)}${coin(178, 180)}
+  </svg>`;
+}
+function bar(label, pct, kind) { return `<div class="br"><span>${label}</span><div class="br-t"><i class="${kind}" style="width:${pct}%"></i></div></div>`; }
+function loader(steps) {
+  let p = 0;
+  const tick = setInterval(() => {
+    p = Math.min(100, p + 4);
+    const b = document.getElementById("ld-bar");
+    if (!b) return clearInterval(tick);
+    b.style.width = p + "%";
+    document.getElementById("ld-pct").textContent = p + "%";
+    document.getElementById("ld-txt").textContent = steps[Math.min(steps.length - 1, Math.floor(p / (100 / steps.length + 0.01)))];
+    if (p >= 100) { clearInterval(tick); setTimeout(next, 200); }
+  }, 80);
+}
+function rendaEcho() {
+  const R = { ate2: "Para quem ganha até R$2.000, é mais que um salário a mais.", "2a3": "Para quem ganha até R$3.500, é quase um segundo salário.", "3a5": "É metade ou mais do que você ganha hoje.", "5+": "É uma segunda fonte de renda, sem largar o emprego." }[A.renda];
+  return R ? `<p class="hint" data-drop="1">${R}</p>` : "";
+}
+function row(k, v) { return `<tr><td>${k}</td><td>${v || "—"}</td></tr>`; }
+
+/* regra da safe area: a tela tem que caber sem rolar */
+function fit() {
+  const sec = app.querySelector(".screen");
+  if (!sec || sec.classList.contains("scroll")) return;
+  sec.querySelectorAll("[data-drop]").forEach(el => el.hidden = false);
+  const drops = [...sec.querySelectorAll("[data-drop]")].sort((a, b) => b.dataset.drop - a.dataset.drop);
+  const overflows = () => sec.scrollHeight > sec.clientHeight;
+  while (overflows() && drops.length) drops.shift().hidden = true;
+}
+
+const app = document.getElementById("app");
+const foot = document.getElementById("foot");
+const cta = document.getElementById("cta");
+const back = document.getElementById("back");
+let cur = 0;
+
+function show(i, push = true) {
+  if (push && cur !== i) hist.push(cur);
+  cur = i;
+  const s = S[i];
+  app.innerHTML = `<section class="screen${s.center ? " center-y" : ""}${s.scroll ? " scroll" : ""}">${s.render()}</section>`;
+  document.body.classList.toggle("pitch-mode", !!s.dark);
+  document.getElementById("prog").style.width = Math.min(100, (s.n / TOTAL) * 100) + "%";
+  back.disabled = hist.length === 0;
+  foot.hidden = !s.cta;
+  if (s.cta) { cta.textContent = s.cta; cta.disabled = s.multi ? !(A.tarefas || []).length : false; }
+  fit();
+  if (s.onShow) s.onShow();
+  autoplay();
+  // um vídeo de cada vez: o da tela 24 a partir da tela 3, o da página de vendas logo em seguida
+  // vídeos depois das fotos; se o lead estiver perto do vídeo, começa na hora
+  const vids = () => preloadVideo("video/wesley-bpo-v2.mp4").then(() => preloadVideo("video/prova.mp4"));
+  if (s.n >= 3 && s.n < 45) imgsReady.then(vids);
+  if (s.n >= 15 && s.n < 45) vids();
+  app.querySelectorAll("img").forEach(img => img.complete || img.addEventListener("load", fit, { once: true }));
+  const r = document.getElementById("restart");
+  if (r) r.onclick = () => { for (const k in A) delete A[k]; hist.length = 0; cur = 0; show(0, false); };
+}
+function next() { if (cur < S.length - 1) show(cur + 1); }
+
+app.addEventListener("click", e => {
+  const single = e.target.closest("[data-k]");
+  if (single) {
+    A[single.dataset.k] = single.dataset.v;
+    app.querySelectorAll(`[data-k="${single.dataset.k}"]`).forEach(b => b.classList.toggle("on", b === single));
+    setTimeout(next, 180);
+    return;
+  }
+  const m = e.target.closest("[data-multi]");
+  if (m) {
+    const v = m.dataset.multi;
+    let t = A.tarefas || [];
+    if (v === "nenhuma") t = t.includes("nenhuma") ? [] : ["nenhuma"];
+    else { t = t.filter(x => x !== "nenhuma"); t = t.includes(v) ? t.filter(x => x !== v) : [...t, v]; }
+    A.tarefas = t;
+    app.querySelectorAll("[data-multi]").forEach(b => {
+      const on = t.includes(b.dataset.multi);
+      b.classList.toggle("on", on); b.setAttribute("aria-pressed", on);
+      b.querySelector(".box").textContent = on ? "✓" : "";
+    });
+    cta.disabled = !t.length;
+  }
+});
+
+cta.addEventListener("click", () => { const s = S[cur]; if (s.onCta && !s.onCta()) return; next(); });
+back.addEventListener("click", () => { let i = hist.pop(); while (i !== undefined && S[i].auto && hist.length) i = hist.pop(); if (i !== undefined) show(i, false); });
+addEventListener("resize", fit);
+if (document.fonts) document.fonts.ready.then(fit);
+
+/* atalhos de revisão do time: #fase2 e #fase3 abrem direto na fase, com respostas de exemplo das anteriores */
+const EX1 = { genero: "mulher", idade: "29-39", filhos: "sim", vinculo: "clt", area: "fin", exp: "3-5", tarefas: ["pagar", "extrato"], excel: "todo" };
+const EX2 = { renda: "2a3", justo: "nao", fecha: "as-vezes", abriu_mao: "pouco", briga: "as-vezes", aumentos: "0", travada: "sim", tentou: "pensa", trava: "cliente", consciencia: "ouviu" };
+const EX3 = { rede: "poucos", diferenca: "muita", uso: "familia", tempo: "30-60", motivo: "familia", futuro: "empresa", local: "casa" };
+const EX4 = { disposicao: "total", acredita: "pronto", nome: "Ana", email: "ana@exemplo.com", whats: "(11) 99999-8888" };
+let jump = { "#fase2": ["fase2", EX1], "#fase3": ["fase3", { ...EX1, ...EX2 }], "#fase4": ["fase4", { ...EX1, ...EX2, ...EX3 }], "#plano": ["fase5", { ...EX1, ...EX2, ...EX3, ...EX4 }], "#fase5": ["fase5", { ...EX1, ...EX2, ...EX3, ...EX4 }] }[location.hash];
+const tN = /^#t(\d+)$/.exec(location.hash);
+if (!jump && tN) { const idx = S.findIndex(x => x.n === Number(tN[1])); if (idx >= 0) { S[idx].id = S[idx].id || "t" + tN[1]; jump = [S[idx].id, { ...EX1, ...EX2, ...EX3, ...EX4 }]; } }
+/* ordem de início: 1) a tela em que o leitor já estava (atualização ao vivo), 2) atalho #faseN, 3) tela 1 */
+function boot(data) {
+  if (data && data.cur != null && S[data.cur]) {
+    Object.assign(A, data.A || {});
+    hist.length = 0; hist.push(...(data.hist || []));
+    cur = data.cur;
+    show(cur, false);
+  } else if (jump) {
+    Object.assign(A, jump[1]);
+    hist.push(0);
+    cur = S.findIndex(s => s.id === jump[0]);
+    show(cur, false);
+  } else show(0, false);
+}
+const HOT = window.claude && window.claude.hot;
+if (HOT && HOT.snapshot) HOT.snapshot(() => ({ A, cur, hist: hist.slice() }));
+if (HOT && HOT.ready) HOT.ready(boot); else boot(HOT && HOT.data);
+</script>
